@@ -136,6 +136,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
             $stmt->close();
         }
 
+        // Update frekuensi menabung dan terakhir menabung
+        $update_user_query = "UPDATE user 
+        SET frekuensi_menabung = frekuensi_menabung + 1, 
+        terakhir_menabung = ?
+        WHERE id = ?";
+
+        if ($update_stmt = $koneksi->prepare($update_user_query)) {
+            $tanggal_sekarang = date('Y-m-d H:i:s');
+            $update_stmt->bind_param("si", $tanggal_sekarang, $id_user);
+            $update_stmt->execute();
+            $update_stmt->close();
+        }
 
 
         // Uncomment this line when ready to redirect

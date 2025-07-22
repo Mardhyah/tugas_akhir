@@ -43,6 +43,9 @@ switch ($page) {
     case 'detail_user':
         include 'views/detail_user/index_detail.php';
         break;
+    case 'ubah_password':
+        include 'views/detail_user/ubah_password.php';
+        break;
     case 'tambah_sampah':
         include 'views/sampah/tambah_sampah.php'; // misalnya file kamu ada di views/sampah/
         break;

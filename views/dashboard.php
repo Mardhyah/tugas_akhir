@@ -1,6 +1,7 @@
 <?php
 include_once __DIR__ . '/layouts/sidebar.php';
 include_once __DIR__ . '/../fungsi.php';
+require_once __DIR__ . '/../crypto/crypto_helper.php';
 // Cek apakah pengguna sudah login
 checkSession();
 
@@ -40,6 +41,44 @@ if ($resultTransaksi === false) {
     echo "Error: " . $koneksi->error;
     exit;
 }
+
+
+// Query untuk ambil terakhir menabung dan frekuensi menabung
+$sqlMenabung = "
+    SELECT 
+        MAX(t.date) AS terakhir_menabung,
+        COUNT(*) AS frekuensi_menabung
+    FROM 
+        transaksi t
+    JOIN 
+        setor_sampah ss ON t.id = ss.id_transaksi
+    WHERE 
+        t.id_user = ?
+";
+
+$stmtMenabung = $koneksi->prepare($sqlMenabung);
+$stmtMenabung->bind_param("i", $id_user);
+$stmtMenabung->execute();
+$resultMenabung = $stmtMenabung->get_result();
+
+if ($resultMenabung && $rowMenabung = $resultMenabung->fetch_assoc()) {
+    $data['terakhir_menabung'] = $rowMenabung['terakhir_menabung'];
+    $data['frekuensi_menabung'] = $rowMenabung['frekuensi_menabung'];
+} else {
+    $data['terakhir_menabung'] = null;
+    $data['frekuensi_menabung'] = 0;
+}
+
+
+$uang = $data['uang'] ?? 0;
+$emas = $data['emas'] ?? 0;
+
+// Ambil harga jual emas terkini (dalam Rp/gram)
+$current_gold_price_sell = getCurrentGoldPricesell();
+
+// Hitung saldo emas dalam bentuk rupiah
+$gold_equivalent = $emas * $current_gold_price_sell;
+
 
 // Query untuk mengambil data kategori dan sampah
 $sql = "SELECT ks.name AS kategori, s.jenis, s.harga 
@@ -109,8 +148,26 @@ if ($resultChart->num_rows > 0) {
     }
 }
 
+
+// Total Nasabah
+$queryNasabah = mysqli_query($koneksi, "SELECT COUNT(*) AS total_nasabah FROM user WHERE role = 'nasabah'");
+$dataNasabah = mysqli_fetch_assoc($queryNasabah);
+$totalNasabah = $dataNasabah['total_nasabah'];
+
+// Total Jual ke Pengepul
+$queryJual = mysqli_query($koneksi, "SELECT SUM(jumlah_rp) AS total_jual FROM jual_sampah");
+$dataJual = mysqli_fetch_assoc($queryJual);
+$totalJual = $dataJual['total_jual'] ?? 0;
+
+
 // Close the statement
 $stmt->close();
+
+function isEncryptedFormat(string $text): bool
+{
+    // Cek apakah base64 valid dan memiliki struktur ciphertext AES (biasanya cukup panjang)
+    return preg_match('/^[A-Za-z0-9+\/=]+$/', $text) && strlen($text) > 64;
+}
 ?>
 
 <!DOCTYPE html>
@@ -125,6 +182,9 @@ $stmt->close();
     <!-- My CSS -->
     <link rel="stylesheet" href="/adminhub/assets/css/style.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -155,11 +215,17 @@ $stmt->close();
         margin-top: 20px;
     }
 
-    /* Daftar transaksi */
+    /* Daftar transaksi - scrollable */
     .transaction-list {
         display: flex;
         flex-direction: column;
         gap: 15px;
+        max-height: 400px;
+        /* <== scroll aktif jika tinggi lebih dari ini */
+        overflow-y: auto;
+        padding-right: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
     }
 
     /* Setiap item transaksi */
@@ -225,6 +291,124 @@ $stmt->close();
             padding: 15px;
         }
     }
+
+
+    .nasabah-info-wide-card {
+        width: 100%;
+        margin-top: 30px;
+    }
+
+    .user-card-wide {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        padding: 24px 32px;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    .user-info-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .user-info-section div {
+        font-size: 16px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-info-box {
+        background-color: #ffffff;
+        border-left: 5px solid #4e73df;
+        padding: 14px 18px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-info-box i {
+        font-size: 18px;
+        color: #4e73df;
+    }
+
+    .user-info-box span {
+        font-size: 15px;
+        color: #333;
+    }
+
+
+    .balance-section {
+        flex: 1;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .balance-box {
+        flex: 1;
+        min-width: 180px;
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 1px #ddd;
+    }
+
+    .balance-box.tunai {
+        background-color: #e3f2fd;
+    }
+
+    .balance-box.emas {
+        background-color: #fff3e0;
+    }
+
+    .balance-box .label {
+        display: block;
+        font-size: 15px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .balance-box .value {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .balance-box.tunai .value {
+        color: #1e88e5;
+    }
+
+    .balance-box.emas .value {
+        color: #fb8c00;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+        .user-card-wide {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .balance-section {
+            flex-direction: column;
+        }
+
+        .balance-box {
+            width: 100%;
+        }
+    }
 </style>
 
 
@@ -252,22 +436,94 @@ $stmt->close();
             </div>
 
             <ul class="box-info">
+                <?php if ($_SESSION['role'] === 'admin') : ?>
+                    <li>
+                        <i class='bx bxs-group'></i>
+                        <span class="text">
+                            <h3><?php echo $totalNasabah; ?></h3>
+                            <p>Total Nasabah</p>
+                        </span>
+                    </li>
+                    <li>
+                        <i class='bx bxs-dollar-circle'></i>
+                        <span class="text">
+                            <h3>Rp <?php echo number_format($totalJual, 2, ',', '.'); ?></h3>
+                            <p>Total Jual ke Pengepul</p>
+                        </span>
+                    </li>
+                <?php endif; ?>
 
-                <li>
-                    <i class='bx bxs-group'></i>
-                    <span class="text">
-                        <h3>120</h3>
-                        <p>Total Nasabah</p>
-                    </span>
-                </li>
-                <li>
-                    <i class='bx bxs-dollar-circle'></i>
-                    <span class="text">
-                        <h3>Rp 25.000.000</h3>
-                        <p>Total Jual ke Pengepul</p>
-                    </span>
-                </li>
+                <?php if ($_SESSION['role'] === 'nasabah') : ?>
+                    <div class="nasabah-info-wide-card">
+                        <div class="user-card-wide">
+                            <!-- Bagian Informasi Akun -->
+                            <div class="user-info-section">
+                                <div class="user-nik">
+                                    <i class="fas fa-id-card"></i>
+                                    <span><strong>NIK:</strong> <?php echo $data['nik']; ?></span>
+                                </div>
+                                <div class="user-name">
+                                    <i class="fas fa-user"></i>
+                                    <span><strong>Username:</strong> <?php echo $data['username']; ?></span>
+                                </div>
+                                <div class="user-last-deposit">
+                                    <i class="fas fa-clock"></i>
+                                    <span>
+                                        <strong>Terakhir Menabung:</strong>
+
+                                        <?php
+                                        if (!empty($data['terakhir_menabung']) && $data['terakhir_menabung'] !== '0000-00-00 00:00:00') {
+                                            echo date('d M Y', strtotime($data['terakhir_menabung']));
+                                        } else {
+                                            echo 'Belum Pernah';
+                                        }
+                                        ?>
+                                    </span>
+                                </div>
+
+                                <div class="user-freq-deposit">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>
+                                        <strong>Frekuensi Menabung:</strong>
+                                        <?php echo isset($data['frekuensi_menabung']) ? (int)$data['frekuensi_menabung'] . ' kali' : '0 kali'; ?>
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <!-- Bagian Saldo -->
+                            <div class="balance-section">
+                                <!-- Saldo Tunai -->
+                                <div class="balance-box tunai">
+                                    <span class="label">Saldo Tunai Koversi Emas</span>
+                                    <span class="value">
+                                        <?php echo number_format(round($gold_equivalent, 2), 2, ',', '.'); ?>
+                                    </span>
+                                    <br>
+                                    <small style="font-size: 14px; color: #666;">
+
+                                    </small>
+                                </div>
+
+                                <!-- Saldo Emas -->
+                                <div class="balance-box emas">
+                                    <span class="label">Saldo Emas</span>
+                                    <span class="value">
+                                        <?php echo number_format((float)$emas, 4, ',', '.'); ?> g
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+
+
+
+
+
             </ul>
+
 
 
 
@@ -306,18 +562,55 @@ $stmt->close();
                                     switch ($row['jenis_transaksi']) {
                                         case 'tarik_saldo':
                                             echo "<div>Jenis Saldo: " . ucfirst($row['jenis_saldo']) . "</div>";
-                                            echo "<div style='color:red;'>- Rp. " . number_format($row['jumlah_tarik'], 2, ',', '.') . "</div>";
+
+                                            $jumlahTarik = $row['jumlah_tarik'];
+                                            $jumlahDisplay = $jumlahTarik;
+
+                                            if (isEncryptedFormat($jumlahTarik)) {
+                                                try {
+                                                    $decrypted = decryptWithAES($jumlahTarik);
+
+                                                    if (stripos($decrypted, 'Gram') !== false) {
+                                                        $jumlahDisplay = $decrypted;
+                                                    } else {
+                                                        $jumlahDisplay = "Rp. " . number_format((float)$decrypted, 2, ',', '.');
+                                                    }
+                                                } catch (Exception $e) {
+                                                    $jumlahDisplay = '❌ Gagal dekripsi';
+                                                }
+                                            } else {
+                                                $jumlahDisplay = "Rp. " . number_format((float)$jumlahTarik, 2, ',', '.');
+                                            }
+
+                                            echo "<div style='color:red;'>- $jumlahDisplay</div>";
                                             break;
 
                                         case 'setor_sampah':
-                                            echo "<div>Sampah: " . ucfirst($row['jenis_sampah']) . " (" . number_format($row['jumlah_kg'], 2) . " Kg)</div>";
-                                            echo "<div style='color:#28a745;'>+ Rp. " . number_format($row['jumlah_rp'], 2, ',', '.') . "</div>";
+                                            echo "<div>Sampah: " . ucfirst($row['jenis_sampah']) . " (" . number_format((float)$row['jumlah_kg'], 2) . " Kg)</div>";
+
+                                            $jumlahRp = $row['jumlah_rp'];
+                                            $jumlahDisplay = $jumlahRp;
+
+                                            if (isEncryptedFormat($jumlahRp)) {
+                                                try {
+                                                    $decrypted = decryptWithAES($jumlahRp);
+
+                                                    if (stripos($decrypted, 'Gram') !== false) {
+                                                        $jumlahDisplay = $decrypted;
+                                                    } else {
+                                                        $jumlahDisplay = "Rp. " . number_format((float)$decrypted, 2, ',', '.');
+                                                    }
+                                                } catch (Exception $e) {
+                                                    $jumlahDisplay = '❌ Gagal dekripsi';
+                                                }
+                                            } else {
+                                                $jumlahDisplay = "Rp. " . number_format((float)$jumlahRp, 2, ',', '.');
+                                            }
+
+                                            echo "<div style='color:#28a745;'>+ $jumlahDisplay</div>";
                                             break;
 
-                                        case 'pindah_saldo':
-                                            echo "<div>Jumlah: Rp. " . number_format($row['jumlah'], 2, ',', '.') . "</div>";
-                                            echo "<div style='color:#1E90FF;'>Hasil: " . number_format($row['hasil_konversi'], 4, ',', '.') . " " . $row['jenis_konversi'] . "</div>";
-                                            break;
+
 
                                         case 'jual_sampah':
                                             echo "<div>Jenis Sampah: " . ucfirst($row['jenis_jual_sampah']) . " (" . number_format($row['jumlah_jual_kg'], 2) . " Kg)</div>";
@@ -336,28 +629,7 @@ $stmt->close();
                 </div>
                 <?php if ($data['role'] == 'nasabah') : ?>
                     <!-- Hanya ditampilkan jika pengguna adalah nasabah -->
-                    <div class="additional-info">
-                        <div class="user-card">
-                            <div class="user-card-header">
-                                <span class="wifi-icon"><i class="fas fa-wifi"></i></span>
-                                <span class="account-number"><?php echo $data['nik']; ?></span>
-                            </div>
-                            <div class="user-details">
-                                <p>Username: <?php echo $data['username']; ?></p>
-                            </div>
 
-                            <div class="user-balance">
-                                <!-- <div class="balance-card">
-                                <span>Tunai</span>
-                                <span>Rp <?php echo number_format($data['uang'], 2, ',', '.'); ?></span>
-                            </div> -->
-                                <div class="balance-card">
-                                    <span>Emas</span>
-                                    <span><?php echo number_format($data['emas'], 4, ',', '.'); ?> g</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="table-container">
                         <h3>Jenis-jenis Sampah</h3>
