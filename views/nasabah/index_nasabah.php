@@ -100,75 +100,176 @@ $deleted_users = mysqli_query($koneksi, $deleted_users_query);
     <title>AdminHub</title>
 </head>
 <style>
+    input[name="search_nama"] {
+        width: 600px;
+        /* Panjang input */
+        padding: 10px 14px;
+        font-size: 16px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        background-color: #fff;
+    }
+
+    input[name="search_nama"]:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
+    }
+
     .form-group {
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
+        margin-bottom:
+            20px;
+        display:
+            flex;
+        flex-direction:
+            column;
     }
 
     .form-group label {
-        font-weight: 500;
-        margin-bottom: 8px;
-        color: #333;
+        font-weight:
+            500;
+        margin-bottom:
+            8px;
+        color:
+            #333;
     }
 
     .form-group input[type="text"],
     .form-group input[type="search"],
     .form-group input[type="number"],
     .form-group select {
-        padding: 10px 14px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: 'Poppins', sans-serif;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        padding:
+            10px 14px;
+        border:
+            1px solid #ccc;
+        border-radius:
+            8px;
+        font-size:
+            14px;
+        font-family:
+            'Poppins',
+            sans-serif;
+        transition:
+            border-color 0.2s,
+            box-shadow 0.2s;
     }
 
     .form-group input:focus,
     .form-group select:focus {
-        border-color: #007bff;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+        border-color:
+            #007bff;
+        outline:
+            none;
+        box-shadow:
+            0 0 0 3px rgba(0,
+                123,
+                255,
+                0.15);
     }
 
-
-
     .pagination-wrapper {
-        margin-top: 20px;
-        text-align: center;
+        margin-top:
+            20px;
+        text-align:
+            center;
     }
 
     .pagination {
-        display: inline-flex;
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        gap: 6px;
+        display:
+            inline-flex;
+        list-style-type:
+            none;
+        padding:
+            0;
+        margin:
+            0;
+        gap:
+            6px;
     }
 
     .pagination li {
-        display: inline;
+        display:
+            inline;
     }
 
     .pagination li a {
-        padding: 6px 12px;
-        background-color: #f2f2f2;
-        border: 1px solid #ccc;
-        text-decoration: none;
-        color: #333;
-        border-radius: 4px;
-        transition: background-color 0.3s;
+        padding:
+            6px 12px;
+        background-color:
+            #f2f2f2;
+        border:
+            1px solid #ccc;
+        text-decoration:
+            none;
+        color:
+            #333;
+        border-radius:
+            4px;
+        transition:
+            background-color 0.3s;
     }
 
     .pagination li a:hover {
-        background-color: #ddd;
+        background-color:
+            #ddd;
     }
 
     .pagination li.active a {
-        font-weight: bold;
-        background-color: #333;
-        color: #fff;
-        border-color: #333;
+        font-weight:
+            bold;
+        background-color:
+            #333;
+        color:
+            #fff;
+        border-color:
+            #333;
+    }
+
+    /*
+===
+Button
+Biru
+(Tambahan)
+===
+*/
+    .inputbtn8 {
+        padding:
+            5px 10px;
+        border-radius:
+            5px;
+        color:
+            white;
+        font-size:
+            13px;
+        text-decoration:
+            none;
+        background-color:
+            #007bff;
+        /*
+Biru
+*/
+    }
+
+    .inputbtn8:hover {
+        background-color:
+            #0056b3;
+    }
+
+    /*
+===
+Responsive
+untuk
+.inputbtn8
+===
+*/
+    @media (max-width: 768px) {
+        .inputbtn8 {
+            font-size:
+                12px;
+            padding:
+                6px 12px;
+        }
     }
 </style>
 
@@ -270,7 +371,7 @@ $deleted_users = mysqli_query($koneksi, $deleted_users_query);
                                                     <td><?= htmlspecialchars($row["no_rek"]); ?></td>
                                                     <td>
                                                         <a href="index.php?page=detail_nasabah&id=<?= htmlspecialchars($row["id"]); ?>" class="inputbtn6">Detail</a>
-                                                        <a href="index.php?page=ubah_nasabah&id=<?= htmlspecialchars($row["id"]); ?>" class="btn btn-warning">Ubah</a>
+                                                        <a href="index.php?page=ubah_nasabah&id=<?= htmlspecialchars($row["id"]); ?>" class="inputbtn8">Ubah</a>
                                                         <a href="index.php?page=nasabah&action=delete&id=<?= $row['id']; ?>" class="inputbtn7"
                                                             onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
                                                     </td>

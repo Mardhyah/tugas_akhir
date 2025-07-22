@@ -108,14 +108,4 @@ class AES
 
         return $plaintext;
     }
-
-    // /**
-    //  * Buat kunci acak 32-byte (256-bit)
-    //  *
-    //  * @return string
-    //  */
-    // public static function generateRandomKey(): string
-    // {
-    //     return random_bytes(32); // Langsung hasilkan 32-byte binary
-    // }
 }

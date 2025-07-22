@@ -719,14 +719,14 @@ tr:hover {
     background-color: #45a049;
 }
 
-/* === Button Ubah & Hapus (di tabel) === */
+/* === Button Ubah, Hapus, dan Tambahan (di tabel) === */
 .liaksi {
     list-style: none;
     display: inline-block;
     margin-right: 5px;
 }
 
-.inputbtn6, .inputbtn7 {
+.inputbtn6, .inputbtn7, .inputbtn8 {
     padding: 5px 10px;
     border-radius: 5px;
     color: white;
@@ -750,6 +750,14 @@ tr:hover {
     background-color: #c82333;
 }
 
+.inputbtn8 {
+    background-color: #007bff; /* Biru untuk Tambahan */
+}
+
+.inputbtn8:hover {
+    background-color: #0056b3;
+}
+
 /* === Responsive === */
 @media (max-width: 768px) {
     .header--wrapper {
@@ -761,12 +769,11 @@ tr:hover {
         font-size: 12px;
     }
 
-    .inputbtn, .inputbtn6, .inputbtn7 {
+    .inputbtn, .inputbtn6, .inputbtn7, .inputbtn8 {
         font-size: 12px;
         padding: 6px 12px;
     }
 }
-
 
 
 

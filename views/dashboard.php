@@ -238,22 +238,7 @@ $stmt->close();
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
-            <a href="#" class="nav-link">Categories</a>
-            <form action="#">
-                <div class="form-input">
-                    <input type="search" placeholder="Search...">
-                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
-                </div>
-            </form>
-            <input type="checkbox" id="switch-mode" hidden>
-            <label for="switch-mode" class="switch-mode"></label>
-            <a href="#" class="notification">
-                <i class='bx bxs-bell'></i>
-                <span class="num">8</span>
-            </a>
-            <a href="#" class="profile">
-                <img src="img/people.png">
-            </a>
+
         </nav>
         <!-- NAVBAR -->
 
@@ -267,25 +252,23 @@ $stmt->close();
             </div>
 
             <ul class="box-info">
-                <li>
-                    <i class='bx bxs-calendar-check'></i>
-                    <span class="text">
 
-                    </span>
-                </li>
                 <li>
                     <i class='bx bxs-group'></i>
                     <span class="text">
-
+                        <h3>120</h3>
+                        <p>Total Nasabah</p>
                     </span>
                 </li>
                 <li>
                     <i class='bx bxs-dollar-circle'></i>
                     <span class="text">
-
+                        <h3>Rp 25.000.000</h3>
+                        <p>Total Jual ke Pengepul</p>
                     </span>
                 </li>
             </ul>
+
 
 
             <div class="table-data">
