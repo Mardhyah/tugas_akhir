@@ -167,7 +167,3 @@ $query_all = getSampahData();
 </body>
 
 </html>
-
-ini sampah.php
-
-tolong buatkan stuktur mvc nya

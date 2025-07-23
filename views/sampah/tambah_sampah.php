@@ -61,7 +61,6 @@ if (isset($_POST["submit"])) {
         border-radius: 8px;
         background-color: #f9f9f9;
         font-size: 14px;
-        font-family: 'Poppins', 'Lato', sans-serif;
     }
 
     input[readonly] {
@@ -86,7 +85,6 @@ if (isset($_POST["submit"])) {
         border-radius: 8px;
         cursor: pointer;
         transition: background-color 0.3s ease;
-        font-family: 'Poppins', 'Lato', sans-serif;
     }
 
     .inputbtn:hover {
@@ -95,23 +93,21 @@ if (isset($_POST["submit"])) {
 
     /* === Modal Button (Ubah Persentase) === */
     .btn-primary {
-        background-color: #00e1ffff;
+        background-color: #25745A;
         border: none;
-        font-family: 'Poppins', 'Lato', sans-serif;
         padding: 8px 16px;
         border-radius: 8px;
         font-size: 14px;
     }
 
     .btn-primary:hover {
-        background-color: #0056b3;
+        background-color: #165741ff;
     }
 
     /* === Modal Button Secondary === */
     .btn-secondary {
         background-color: #6c757d;
         border: none;
-        font-family: 'Poppins', 'Lato', sans-serif;
         padding: 8px 16px;
         border-radius: 8px;
         font-size: 14px;
@@ -177,15 +173,15 @@ if (isset($_POST["submit"])) {
                             <div class="container">
 
 
-                                <label for="jenis">Jenis</label><br>
-                                <input type="text" placeholder="Masukkan Jenis Sampah" name="jenis" required><br><br>
+                                <label for="jenis">Jenis</label>
+                                <input type="text" placeholder="Masukkan Jenis Sampah" name="jenis" required>
 
-                                <label for="harga_pengepul">Harga Pengepul</label><br>
+                                <label for="harga_pengepul">Harga Pengepul</label>
                                 <input type="text" id="harga_pengepul" placeholder="Masukkan Harga Pengepul"
-                                    name="harga_pengepul" required><br><br>
+                                    name="harga_pengepul" required>
 
                                 <!-- Persentase Keuntungan dengan Button di Samping -->
-                                <label for="keuntungan_percent">Persentase Keuntungan (Default: 20%)</label><br>
+                                <label for="keuntungan_percent">Persentase Keuntungan (Default: 20%)</label>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" id="keuntungan_percent" name="keuntungan_percent"
                                         value="20" readonly>
@@ -195,17 +191,17 @@ if (isset($_POST["submit"])) {
                                         </button>
                                     </div>
                                 </div>
-                                <br>
+
 
                                 <!-- Tambahkan label untuk menampilkan keuntungan -->
-                                <label for="keuntungan">Keuntungan (Hasil)</label><br>
-                                <input type="text" id="keuntungan" placeholder="Keuntungan" readonly><br><br>
+                                <label for="keuntungan">Keuntungan (Hasil)</label>
+                                <input type="text" id="keuntungan" placeholder="Keuntungan" readonly>
 
-                                <label for="harga_nasabah">Harga Nasabah (Hasil)</label><br>
+                                <label for="harga_nasabah">Harga Nasabah (Hasil)</label>
                                 <input type="text" id="harga_nasabah" placeholder="Harga Nasabah" name="harga_nasabah"
-                                    readonly><br><br>
+                                    readonly>
 
-                                <label for="kategori">Kategori</label><br>
+                                <label for="kategori">Kategori</label>
 
                                 <select name="kategori">
                                     <option value="">Pilih</option>
@@ -213,7 +209,7 @@ if (isset($_POST["submit"])) {
                                         <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <br><br>
+
 
 
 

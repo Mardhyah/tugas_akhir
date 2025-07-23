@@ -11,7 +11,7 @@ if (!isset($koneksi)) {
 }
 
 if (!isset($_SESSION['username'])) {
-    header("location:login.php");
+    header('Location: index.php?page=login');
     exit();
 }
 

@@ -68,6 +68,18 @@ switch ($page) {
     case 'nota':
         include 'views/transaksi/nota.php';
         break;
+
+    case 'login':
+        include 'views/auth/login.php';
+        break;
+    case 'register_nasabah':
+        include 'views/auth/register_nasabah.php';
+        break;
+    case 'logout':
+        include 'views/auth/logout.php';
+        break;
+
+
     default:
         echo "<h1>404 Page Not Found</h1>";
         break;

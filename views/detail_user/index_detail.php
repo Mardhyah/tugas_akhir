@@ -9,7 +9,7 @@ include_once __DIR__ . '/../../config/koneksi.php';
 function checkSession()
 {
     if (!isset($_SESSION['username'])) {
-        header("Location: login.php");
+        header('Location: index.php?page=login');
         exit();
     }
 }

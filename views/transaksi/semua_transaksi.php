@@ -355,7 +355,7 @@ function isEncryptedFormat($text)
                                         <th>ID Transaksi</th>
                                         <th>Username</th>
                                         <th>Jenis Transaksi</th>
-                                        <th>Jumlah (KG)</th>
+                                        <th>Jumlah</th>
                                         <th>Tanggal</th>
                                         <th>Jam</th>
                                         <th>Action</th>
@@ -365,16 +365,34 @@ function isEncryptedFormat($text)
                                     <?php if (count($transaksi_result) > 0): ?>
                                         <?php foreach ($transaksi_result as $row): ?>
                                             <?php
-                                            // Ambil dan proses jumlah
-                                            // Ambil dan proses jumlah
                                             $jumlah = $row['jumlah'];
                                             $jumlah_display = $jumlah;
+                                            $jenisTransaksi = strtolower($row['jenis_transaksi']);
+                                            $jenisSaldo = isset($row['jenis_saldo']) ? strtolower($row['jenis_saldo']) : '';
+                                            $idTransaksi = $row['id_transaksi'] ?? $row['id'];
 
-                                            if (isEncryptedFormat($jumlah)) {
+                                            if (strpos($jenisTransaksi, 'setor') !== false && strpos($jenisTransaksi, 'sampah') !== false) {
+                                                $result_rp = query("SELECT jumlah_rp FROM setor_sampah WHERE id_transaksi = '$idTransaksi'");
+
+                                                $total_rp_decrypted = 0;
+                                                $total_item = count($result_rp);
+
+                                                foreach ($result_rp as $item) {
+                                                    $encrypted_rp = $item['jumlah_rp'];
+                                                    try {
+                                                        $decrypted_rp = decryptWithAES($encrypted_rp);
+                                                        if (is_numeric($decrypted_rp)) {
+                                                            $total_rp_decrypted += (float)$decrypted_rp;
+                                                        }
+                                                    } catch (Exception $e) {
+                                                        // gagal dekripsi, bisa skip atau log error
+                                                    }
+                                                }
+
+                                                $jumlah_display = $total_item . ' item (Rp ' . number_format($total_rp_decrypted, 2, ',', '.') . ')';
+                                            } elseif (isEncryptedFormat($jumlah)) {
                                                 try {
                                                     $decrypted = decryptWithAES($jumlah);
-
-                                                    $jenisSaldo = isset($row['jenis_saldo']) ? strtolower($row['jenis_saldo']) : '';
 
                                                     if ($jenisSaldo === 'emas' || $jenisSaldo === 'tarik_emas' || strpos($jenisSaldo, 'emas') !== false) {
                                                         $jumlah_display = number_format((float)$decrypted, 2, ',', '.') . ' gram';
@@ -412,9 +430,10 @@ function isEncryptedFormat($text)
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="7" style="text-align:center;">Tidak ada data transaksi.</td>
+                                            <td colspan="7">Tidak ada transaksi ditemukan.</td>
                                         </tr>
                                     <?php endif; ?>
+
 
                                 </tbody>
                             </table>

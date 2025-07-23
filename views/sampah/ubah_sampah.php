@@ -59,9 +59,138 @@ if (isset($_POST["submit"])) {
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <!-- My CSS -->
-    <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
     <title>AdminHub</title>
 </head>
+<style>
+    .head-title .left span {
+        font-size: 0.85rem;
+        /* sedikit lebih kecil */
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 1.1px;
+        display: block;
+    }
+
+    .head-title .left h1 {
+        font-size: 1.6rem;
+        /* diperkecil */
+        margin-top: 3px;
+        /* dikurangi */
+        font-weight: 700;
+    }
+
+    .card--container {
+        margin-top: 20px;
+        /* dikurangi */
+        padding: 20px;
+        /* dikurangi agar form lebih compact */
+        background-color: #fefefe;
+        border-radius: 12px;
+        /* sedikit diperkecil */
+        box-shadow: 0 0 6px rgb(0 0 0 / 0.05);
+        /* bayangan juga dikurangi */
+    }
+
+    .card--container h3.main--title {
+        font-weight: 700;
+        margin-bottom: 18px;
+        /* dikurangi */
+        color: #2c3e50;
+        border-bottom: 2px solid #4e73df;
+        padding-bottom: 6px;
+        /* dikurangi */
+    }
+
+    .container label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        /* dikurangi */
+        color: #2c3e50;
+    }
+
+    .container input[type="text"],
+    .container input[type="number"],
+    .container input[readonly] {
+        width: 100%;
+        padding: 9px 12px;
+        /* padding dikurangi */
+        margin-bottom: 14px;
+        /* jarak antar input dikurangi */
+        border: 1.5px solid #ddd;
+        border-radius: 6px;
+        /* dikurangi */
+        font-size: 0.95rem;
+        /* font sedikit lebih kecil */
+        transition: border-color 0.3s ease;
+    }
+
+    .container input[type="text"]:focus,
+    .container input[type="number"]:focus {
+        border-color: #4e73df;
+        outline: none;
+        box-shadow: 0 0 4px #4e73dfaa;
+    }
+
+    .container input[readonly] {
+        background-color: #e9ecef;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+
+    /* Styling untuk input group persen keuntungan */
+    .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 14px;
+        /* dikurangi */
+    }
+
+    .input-group input[type="number"] {
+        flex: 1;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: none;
+        padding: 9px 12px;
+        font-size: 0.95rem;
+    }
+
+    .input-group-append {
+        background-color: #f0f0f0;
+        padding: 9px 12px;
+        /* dikurangi */
+        border: 1.5px solid #ddd;
+        border-left: none;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+        font-weight: 700;
+        color: #555;
+        user-select: none;
+    }
+
+    .form-text.text-muted {
+        font-size: 0.8rem;
+        /* sedikit lebih kecil */
+        color: #6c757d;
+        margin-top: -12px;
+        /* dikurangi */
+        margin-bottom: 12px;
+        /* dikurangi */
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+        #content {
+            margin: 15px;
+            padding: 12px;
+        }
+
+        .card--container {
+            padding: 15px;
+        }
+    }
+</style>
 
 <body>
 
@@ -70,6 +199,8 @@ if (isset($_POST["submit"])) {
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
+            <?php include_once __DIR__ . '/../layouts/breadcrumb.php'; ?>
+
         </nav>
         <!-- NAVBAR -->
 
@@ -100,19 +231,19 @@ if (isset($_POST["submit"])) {
 
                                 <input type="hidden" name="id" value="<?= $sampah["id"] ?>">
 
-                                <!-- <label for="id_kategori">ID Kategori</label><br>
-                                <input type="text" placeholder="Masukkan ID Kategori" name="id_kategori"
-                                    value="<?= $sampah["id_kategori"] ?>" required><br><br> -->
+                                <!-- <label for="id_kategori">ID Kategori</label>
+            <input type="text" placeholder="Masukkan ID Kategori" name="id_kategori"
+                value="<?= $sampah["id_kategori"] ?>" required> -->
 
-                                <label for="jenis">Jenis</label><br>
+                                <label for="jenis">Jenis</label>
                                 <input type="text" placeholder="Masukkan Jenis Sampah" name="jenis"
-                                    value="<?= $sampah["jenis"] ?>" required><br><br>
+                                    value="<?= $sampah["jenis"] ?>" required>
 
-                                <label for="harga_pengepul">Harga Pengepul</label><br>
+                                <label for="harga_pengepul">Harga Pengepul</label>
                                 <input type="text" id="harga_pengepul" placeholder="Masukkan Harga Pengepul" name="harga_pusat"
-                                    value="<?= $sampah["harga_pusat"] ?>" required><br><br>
-                                <small id="persentaseHelp" class="form-text text-muted">Masukkan persentase keuntungan dari
-                                    harga pengepul.</small> <br>
+                                    value="<?= $sampah["harga_pusat"] ?>" required>
+                                <small id="persentaseHelp" class="form-text text-muted">Masukkan persentase keuntungan dari harga pengepul.</small>
+
                                 <label for="keuntungan_percent">Persentase Keuntungan</label>
                                 <div class="input-group">
                                     <input type="number" class="form-control" id="keuntungan_percent"
@@ -123,24 +254,22 @@ if (isset($_POST["submit"])) {
                                     </div>
                                 </div>
 
+                                <label for="keuntungan">Keuntungan (Hasil)</label>
+                                <input type="text" id="keuntungan" placeholder="Keuntungan" readonly>
 
-                                <label for="keuntungan">Keuntungan (Hasil)</label><br>
-                                <input type="text" id="keuntungan" placeholder="Keuntungan" readonly><br><br>
-
-                                <label for="harga_nasabah">Harga Nasabah (Hasil)</label><br>
+                                <label for="harga_nasabah">Harga Nasabah (Hasil)</label>
                                 <input type="text" id="harga_nasabah" placeholder="Harga Nasabah" name="harga"
-                                    value="<?= $sampah["harga"] ?>" readonly><br><br>
+                                    value="<?= $sampah["harga"] ?>" readonly>
 
-                                <label for="jumlah">Jumlah</label><br>
+                                <label for="jumlah">Jumlah</label>
                                 <input type="text" placeholder="Masukkan Jumlah" name="jumlah" value="<?= $sampah["jumlah"] ?>"
-                                    required><br><br>
-
-
+                                    required>
 
                                 <button type="submit" name="submit" class="inputbtn">Update</button>
                             </div>
                         </form>
                     </div>
+
                 </div>
                 <!-- Batas Akhir card-container -->
             </div>

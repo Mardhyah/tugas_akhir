@@ -1,6 +1,11 @@
 <?php
-session_start();
-require_once __DIR__ . '/config/koneksi.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+include_once __DIR__ . '/../../config/koneksi.php';
+
+
 
 if (isset($_POST['login'])) {
     $username = $_POST['username'];
@@ -164,17 +169,13 @@ if (isset($_POST['login'])) {
                 </div>
                 <button type="submit" name="login" class="btn-login">Signin</button>
             </form>
-            <div class="social-login">
-                <p>or signin with</p>
-                <i class="fab fa-facebook-circle"></i>
-                <i class="fab fa-google-plus-g"></i>
-                <i class="fab fa-linkedin"></i>
-            </div>
+
         </div>
         <div class="welcome-section">
             <h2>Bank Sampah</h2>
-            <p>Welcome back! We are so happy to have you here. It's great to see you again. We hope you had a safe and enjoyable time away.</p>
-            <button class="btn-signup" onclick="window.location='register.php'">No account yet? Signup.</button>
+            <p>Mulai perubahan dari diri sendiri. <br>Pilah sampah, selamatkan bumi, dan raih nilai. <br><strong>Memilah Sampah, Menabung Emas.</strong></p>
+
+            <button class="btn-signup" onclick="window.location='index.php?page=register_nasabah'">Register Nasabah</button>
         </div>
     </div>
 </body>

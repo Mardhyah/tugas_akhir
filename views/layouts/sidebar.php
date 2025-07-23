@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once __DIR__ . '/../../config/koneksi.php';
 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header('Location: index.php?page=login');
     exit();
 }
 
@@ -105,11 +105,12 @@ $user_role = $_SESSION['role'] ?? '';
 
         <ul class="side-menu">
             <li>
-                <a href="logout.php" class="logout">
+                <a href="index.php?page=login" class="logout">
                     <i class='bx bxs-log-out-circle'></i>
                     <span class="text">Logout</span>
                 </a>
             </li>
+
         </ul>
     </section>
     <!-- SIDEBAR -->
