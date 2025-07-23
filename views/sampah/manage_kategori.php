@@ -60,7 +60,7 @@ $categories = query("SELECT * FROM kategori_sampah ORDER BY id ASC");
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <!-- My CSS -->
-    <link rel="stylesheet" href="/adminhub/assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
 
     <title>AdminHub</title>
 </head>
@@ -99,6 +99,7 @@ $categories = query("SELECT * FROM kategori_sampah ORDER BY id ASC");
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
+            <?php include_once __DIR__ . '/../layouts/breadcrumb.php'; ?>
 
         </nav>
         <!-- NAVBAR -->

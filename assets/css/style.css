@@ -150,7 +150,7 @@ body {
 	color: var(--red);
 }
 #sidebar .side-menu.top li a:hover {
-	color: var(--blue);
+	color:  var(--blue);
 }
 #sidebar .side-menu li a .bx {
 	min-width: calc(60px  - ((4px + 6px) * 2));
@@ -300,6 +300,59 @@ body {
 #content nav #switch-mode:checked + .switch-mode::before {
 	left: calc(100% - (25px - 4px) - 2px);
 }
+
+
+/* Breadcrumb container */
+nav .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 0 20px;
+    padding: 8px 0;
+    list-style: none;
+    background: none;
+    font-size: 14px;
+}
+
+/* Tanda pemisah antar item breadcrumb */
+nav .breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    padding: 0 8px;
+    color: #999;
+}
+
+/* Link breadcrumb default */
+nav .breadcrumb-item a {
+    text-decoration: none;
+    color: #007bff; /* biru default */
+    transition: color 0.2s ease;
+}
+
+/* Link saat hover */
+nav .breadcrumb-item a:hover {
+    color: #0056b3; /* biru tua saat hover */
+    text-decoration: underline;
+}
+
+/* Link breadcrumb yang aktif (punya class 'active-link') */
+nav .breadcrumb-item a.active-link {
+    color: #62776fff !important; /* hijau kebiruan */
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Tambahkan efek hover khusus untuk active-link (opsional) */
+nav .breadcrumb-item a.active-link:hover {
+    color: #148f5a; /* versi lebih gelap dari #17a165 */
+    text-decoration: underline;
+}
+
+/* Breadcrumb item aktif yang bukan link (biasanya span) */
+nav .breadcrumb-item.active {
+    color: #17a165;
+    font-weight: 600;
+    pointer-events: none;
+}
+
 /* NAVBAR */
 
 
@@ -807,3 +860,21 @@ tr:hover {
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
 }
+
+
+    nav .breadcrumb {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 0 0 20px;
+        padding: 8px 0;
+        list-style: none;
+        background: none;
+        font-size: 14px;
+    }
+
+    nav .breadcrumb-item+.breadcrumb-item::before {
+        content: ">";
+        padding: 0 8px;
+        color: #999;
+    }
+

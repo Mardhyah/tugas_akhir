@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .btn-submit:hover {
-            background-color: #357ad6;
+            background-color: #1c6049ff;
         }
 
         /* Tambahan untuk eye icon */

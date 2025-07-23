@@ -50,18 +50,19 @@ $user_role = $_SESSION['role'] ?? '';
             </li>
 
             <?php if ($user_role === 'admin') : ?>
-                <li class="<?= $current_page === 'sampah' ? 'active' : '' ?>">
+                <li class="<?= in_array($current_page, ['sampah', 'tambah_sampah', 'edit_sampah', 'manage_kategori', 'ubah_sampah']) ? 'active' : '' ?>">
                     <a href="index.php?page=sampah">
                         <i class='bx bxs-trash'></i>
                         <span class="text">Sampah</span>
                     </a>
                 </li>
-                <li class="<?= $current_page === 'setor_sampah' ? 'active' : '' ?>">
+                <li class="<?= in_array($current_page, ['setor_sampah', 'tarik_saldo', 'jual_sampah']) ? 'active' : '' ?>">
                     <a href="index.php?page=setor_sampah">
                         <i class='bx bxs-plus-circle'></i>
                         <span class="text">Tambah Transaksi</span>
                     </a>
                 </li>
+
                 <li class="<?= $current_page === 'semua_transaksi' ? 'active' : '' ?>">
                     <a href="index.php?page=semua_transaksi">
                         <i class='bx bxs-detail'></i>
@@ -74,27 +75,30 @@ $user_role = $_SESSION['role'] ?? '';
                         <span class="text">Rekap Transaksi</span>
                     </a>
                 </li>
-                <li class="<?= $current_page === 'admin' ? 'active' : '' ?>">
+                <li class="<?= in_array($current_page, ['admin', 'tambah_admin', 'ubah_admin']) ? 'active' : '' ?>">
                     <a href="index.php?page=admin">
                         <i class='bx bxs-user-badge'></i>
                         <span class="text">Admin</span>
                     </a>
                 </li>
-                <li class="<?= $current_page === 'nasabah' ? 'active' : '' ?>">
+
+                <li class="<?= in_array($current_page, ['nasabah', 'tambah_nasabah', 'ubah_nasabah', 'detail_nasabah']) ? 'active' : '' ?>">
                     <a href="index.php?page=nasabah">
                         <i class='bx bxs-user-account'></i>
                         <span class="text">Nasabah</span>
                     </a>
                 </li>
+
             <?php endif; ?>
 
             <?php if (in_array($user_role, ['admin', 'nasabah'])) : ?>
-                <li class="<?= $current_page === 'detail_user' ? 'active' : '' ?>">
+                <li class="<?= in_array($current_page, ['detail_user', 'ubah_password']) ? 'active' : '' ?>">
                     <a href="index.php?page=detail_user">
                         <i class='bx bxs-user-account'></i>
                         <span class="text">Detail User</span>
                     </a>
                 </li>
+
             <?php endif; ?>
 
         </ul>

@@ -36,9 +36,25 @@ if (!$row) {
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <!-- My CSS -->
-    <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
     <title>AdminHub</title>
 </head>
+<style>
+    .back-btn {
+        background-color: #6c757d;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background-color: #5a6268;
+        color: #fff;
+    }
+</style>
 
 <body>
 
@@ -47,6 +63,7 @@ if (!$row) {
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
+            <?php include_once __DIR__ . '/../layouts/breadcrumb.php'; ?>
 
         </nav>
         <!-- NAVBAR -->
@@ -133,8 +150,8 @@ if (!$row) {
                             </tr>
                         </table><br>
 
-                        <a href="nasabah.php" class="btn btn-secondary">Kembali</a>
-                        <a href="edit_nasabah.php?id=<?= htmlspecialchars($row['id']); ?>" class="inputbtn6">Ubah</a>
+                        <a href="index.php?page=nasabah" class="back-btn">Kembali</a>
+                        <a href="index.php?page=ubah_nasabah&id=<?= htmlspecialchars($row["id"]); ?>" class="inputbtn">Ubah</a>
                     </div>
                 </div>
             </div>

@@ -152,7 +152,9 @@ if (isset($_POST["submit"])) {
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
-            <a href="#" class="nav-link">Categories</a>
+
+            <!-- Breadcrumb -->
+            <?php include_once __DIR__ . '/../layouts/breadcrumb.php'; ?>
 
         </nav>
         <!-- NAVBAR -->

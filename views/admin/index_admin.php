@@ -86,7 +86,7 @@ $query_all = getAdmin($search_nik);
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <!-- My CSS -->
-    <link rel="stylesheet" href="/adminhub/assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
 
     <title>AdminHub</title>
 </head>
@@ -116,6 +116,8 @@ $query_all = getAdmin($search_nik);
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
+            <?php include_once __DIR__ . '/../layouts/breadcrumb.php'; ?>
+
         </nav>
         <!-- NAVBAR -->
 
@@ -133,7 +135,7 @@ $query_all = getAdmin($search_nik);
                 <!-- Ini Main-Content -->
                 <div class="main--content">
 
-                    <!-- Ini card-container -->
+                    <!-- Ini card-contaier -->
                     <div class="card--container">
 
 

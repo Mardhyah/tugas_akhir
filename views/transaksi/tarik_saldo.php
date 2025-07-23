@@ -221,6 +221,51 @@ include_once __DIR__ . '/../layouts/sidebar.php';
 
     <title>AdminHub</title>
 </head>
+<script>
+    function validateSearchForm() {
+        var searchValue = document.getElementById('search_value').value;
+        if (searchValue.trim() === '') {
+            alert('NIK tidak boleh kosong.');
+            return false; // Mencegah form dikirim
+        } else if (searchValue.length !== 16 || isNaN(searchValue)) {
+            alert('NIK harus berisi 16 digit angka.');
+            return false; // Mencegah form dikirim
+        }
+        return true; // Memungkinkan form dikirim
+    }
+
+    function getSuggestions() {
+        var search_value = document.getElementById("search_value").value;
+        if (search_value.length >= 3) { // Minimal input untuk memulai pencarian
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "get_suggestions.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("suggestions").innerHTML = xhr.responseText;
+                    document.getElementById("suggestions").style.display = 'block';
+                }
+            };
+            xhr.send("query=" + search_value);
+        } else {
+            document.getElementById("suggestions").style.display = 'none';
+        }
+    }
+
+    function selectSuggestion(nik) {
+        document.getElementById("search_value").value = nik;
+        document.getElementById("suggestions").style.display = 'none';
+    }
+
+    function validateSearchForm() {
+        var search_value = document.getElementById("search_value").value;
+        if (search_value === "") {
+            alert("NIK tidak boleh kosong.");
+            return false;
+        }
+        return true;
+    }
+</script>
 <style>
     /* Styling for suggestion box */
     #suggestions {
