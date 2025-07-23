@@ -23,77 +23,70 @@ $limit = max(1, $limit); // minimal 1
 
 $offset = ($halaman - 1) * $limit;
 
-// Query utama
 $query = "
-    SELECT 
-        t.id AS id, 
-        u.username AS username,
-        GROUP_CONCAT(DISTINCT 
-            CASE 
-                WHEN ts.id_transaksi IS NOT NULL THEN 
-                    CASE 
-                        WHEN ts.jenis_saldo = 'tarik_emas' THEN 'Tarik Saldo (Emas)'
-                        WHEN ts.jenis_saldo = 'tarik_uang' THEN 'Tarik Saldo (Uang)'
-                    END
-                WHEN ps.id_transaksi IS NOT NULL THEN 
-                    CASE 
-                        WHEN ps.jenis_konversi = 'konversi_emas' THEN 'Pindah Saldo (Emas)'
-                        WHEN ps.jenis_konversi = 'konversi_uang' THEN 'Pindah Saldo (Uang)'
-                    END
-                WHEN ss.id_transaksi IS NOT NULL THEN 'Setor Sampah'
-                WHEN js.id_transaksi IS NOT NULL THEN 'Jual Sampah'
-            END 
-        SEPARATOR ', ') AS jenis_transaksi,
-        IFNULL(
-            CASE
-                WHEN COUNT(ss.id_transaksi) > 0 THEN CONCAT(COUNT(ss.id_transaksi), ' item')
-                WHEN COUNT(js.id_transaksi) > 0 THEN CONCAT(COUNT(js.id_transaksi), ' item')
-                WHEN ts.id_transaksi IS NOT NULL THEN 
-                    CASE 
-                        WHEN ts.jenis_saldo = 'tarik_emas' THEN CONCAT(ts.jumlah_tarik, ' Gram')
-                        WHEN ts.jenis_saldo = 'tarik_uang' THEN ts.jumlah_tarik
-
-                    END
-                WHEN ps.id_transaksi IS NOT NULL THEN 
-                    CASE 
-                        WHEN ps.jenis_konversi = 'konversi_emas' THEN CONCAT(ps.jumlah, ' Gram')
-                        WHEN ps.jenis_konversi = 'konversi_uang' THEN CONCAT('Rp. ', FORMAT(ps.jumlah, 2))
-                    END
-                ELSE '0'
-            END, '0'
-        ) AS jumlah,
-        t.date AS date, 
-        t.time AS time,
-        GROUP_CONCAT(DISTINCT CONCAT(s.jenis, ' : ', ss.jumlah_kg, ' KG') SEPARATOR '<br>') AS detail_sampah
-    FROM 
-        transaksi t
-    LEFT JOIN tarik_saldo ts ON t.id = ts.id_transaksi
-    LEFT JOIN pindah_saldo ps ON t.id = ps.id_transaksi
-    LEFT JOIN setor_sampah ss ON t.id = ss.id_transaksi
-    LEFT JOIN jual_sampah js ON t.id = js.id_transaksi
-    LEFT JOIN sampah s ON (ss.id_sampah = s.id OR js.id_sampah = s.id)
-    LEFT JOIN user u ON t.id_user = u.id
-    WHERE 
-        t.id LIKE '%$search%' OR 
-        u.username LIKE '%$search%' OR 
-        ts.jenis_saldo LIKE '%$search%' OR 
-        ps.jenis_konversi LIKE '%$search%' OR 
-        (ss.id_transaksi IS NOT NULL AND 'Setor Sampah' LIKE '%$search%') OR 
-        (js.id_transaksi IS NOT NULL AND 'Jual Sampah' LIKE '%$search%') OR 
-        (ts.id_transaksi IS NOT NULL AND (
-            ('Tarik Saldo (Emas)' LIKE '%$search%' AND ts.jenis_saldo = 'tarik_emas') OR
-            ('Tarik Saldo (Uang)' LIKE '%$search%' AND ts.jenis_saldo = 'tarik_uang')
-        )) OR
-        (ps.id_transaksi IS NOT NULL AND (
-            ('Pindah Saldo (Emas)' LIKE '%$search%' AND ps.jenis_konversi = 'konversi_emas') OR
-            ('Pindah Saldo (Uang)' LIKE '%$search%' AND ps.jenis_konversi = 'konversi_uang')
-        ))
-    GROUP BY 
-        t.id, t.date, t.time, u.username    
-    ORDER BY 
-        t.date DESC, t.time DESC
-    LIMIT $limit OFFSET $offset
+SELECT 
+    t.id AS id, 
+    u.username AS username,
+    ts.jenis_saldo,
+    ps.jenis_konversi,
+    GROUP_CONCAT(DISTINCT 
+        CASE 
+            WHEN ts.id_transaksi IS NOT NULL THEN 
+                CASE 
+                    WHEN ts.jenis_saldo = 'tarik_emas' THEN 'Tarik Saldo (Emas)'
+                    WHEN ts.jenis_saldo = 'tarik_uang' THEN 'Tarik Saldo (Uang)'
+                END
+            WHEN ps.id_transaksi IS NOT NULL THEN 
+                CASE 
+                    WHEN ps.jenis_konversi = 'konversi_emas' THEN 'Pindah Saldo (Emas)'
+                    WHEN ps.jenis_konversi = 'konversi_uang' THEN 'Pindah Saldo (Uang)'
+                END
+            WHEN ss.id_transaksi IS NOT NULL THEN 'Setor Sampah'
+            WHEN js.id_transaksi IS NOT NULL THEN 'Jual Sampah'
+        END 
+    SEPARATOR ', ') AS jenis_transaksi,
+    IFNULL(
+        CASE
+            WHEN COUNT(ss.id_transaksi) > 0 THEN CONCAT(COUNT(ss.id_transaksi), ' item')
+            WHEN COUNT(js.id_transaksi) > 0 THEN CONCAT(COUNT(js.id_transaksi), ' item')
+            WHEN ts.id_transaksi IS NOT NULL THEN ts.jumlah_tarik
+            WHEN ps.id_transaksi IS NOT NULL THEN ps.jumlah
+            ELSE '0'
+        END, '0'
+    ) AS jumlah,
+    t.date AS date, 
+    t.time AS time,
+    GROUP_CONCAT(DISTINCT CONCAT(s.jenis, ' : ', ss.jumlah_kg, ' KG') SEPARATOR '<br>') AS detail_sampah
+FROM 
+    transaksi t
+LEFT JOIN tarik_saldo ts ON t.id = ts.id_transaksi
+LEFT JOIN pindah_saldo ps ON t.id = ps.id_transaksi
+LEFT JOIN setor_sampah ss ON t.id = ss.id_transaksi
+LEFT JOIN jual_sampah js ON t.id = js.id_transaksi
+LEFT JOIN sampah s ON (ss.id_sampah = s.id OR js.id_sampah = s.id)
+LEFT JOIN user u ON t.id_user = u.id
+WHERE 
+    t.id LIKE '%$search%' OR 
+    u.username LIKE '%$search%' OR 
+    ts.jenis_saldo LIKE '%$search%' OR 
+    ps.jenis_konversi LIKE '%$search%' OR 
+    (ss.id_transaksi IS NOT NULL AND 'Setor Sampah' LIKE '%$search%') OR 
+    (js.id_transaksi IS NOT NULL AND 'Jual Sampah' LIKE '%$search%') OR 
+    (ts.id_transaksi IS NOT NULL AND (
+        ('Tarik Saldo (Emas)' LIKE '%$search%' AND ts.jenis_saldo = 'tarik_emas') OR
+        ('Tarik Saldo (Uang)' LIKE '%$search%' AND ts.jenis_saldo = 'tarik_uang')
+    )) OR
+    (ps.id_transaksi IS NOT NULL AND (
+        ('Pindah Saldo (Emas)' LIKE '%$search%' AND ps.jenis_konversi = 'konversi_emas') OR
+        ('Pindah Saldo (Uang)' LIKE '%$search%' AND ps.jenis_konversi = 'konversi_uang')
+    ))
+GROUP BY 
+    t.id, t.date, t.time, u.username, ts.jenis_saldo, ps.jenis_konversi
+ORDER BY 
+    t.date DESC, t.time DESC
+LIMIT $limit OFFSET $offset
 ";
+
 
 // Eksekusi query
 $transaksi_result = query($query);
@@ -103,10 +96,12 @@ $total_result = query($total_query);
 $total_rows = $total_result[0]['total'];
 $total_pages = ceil($total_rows / $limit);
 
-function isEncryptedFormat(string $text): bool
+function isEncryptedFormat($text)
 {
-    // Cek apakah base64 valid dan memiliki struktur ciphertext AES (biasanya cukup panjang)
-    return preg_match('/^[A-Za-z0-9+\/=]+$/', $text) && strlen($text) > 64;
+    // cek apakah string base64 dan minimal panjang tertentu (misal 24)
+    if (!is_string($text)) return false;
+    if (strlen($text) < 24) return false;
+    return base64_decode($text, true) !== false;
 }
 
 
@@ -371,22 +366,30 @@ function isEncryptedFormat(string $text): bool
                                         <?php foreach ($transaksi_result as $row): ?>
                                             <?php
                                             // Ambil dan proses jumlah
+                                            // Ambil dan proses jumlah
                                             $jumlah = $row['jumlah'];
                                             $jumlah_display = $jumlah;
 
                                             if (isEncryptedFormat($jumlah)) {
                                                 try {
-                                                    $decrypted = decryptWithAES($jumlah); // Ganti sesuai helper AES kamu
-                                                    if (strpos($decrypted, 'Gram') !== false) {
-                                                        $jumlah_display = $decrypted;
-                                                    } else {
+                                                    $decrypted = decryptWithAES($jumlah);
+
+                                                    $jenisSaldo = isset($row['jenis_saldo']) ? strtolower($row['jenis_saldo']) : '';
+
+                                                    if ($jenisSaldo === 'emas' || $jenisSaldo === 'tarik_emas' || strpos($jenisSaldo, 'emas') !== false) {
+                                                        $jumlah_display = number_format((float)$decrypted, 2, ',', '.') . ' gram';
+                                                    } elseif (is_numeric($decrypted)) {
                                                         $jumlah_display = "Rp. " . number_format((float)$decrypted, 2, ',', '.');
+                                                    } else {
+                                                        $jumlah_display = '❌ Gagal dekripsi';
                                                     }
                                                 } catch (Exception $e) {
                                                     $jumlah_display = '❌ Gagal dekripsi';
                                                 }
                                             }
+
                                             ?>
+
                                             <tr>
                                                 <td><?= $row['id']; ?></td>
                                                 <td><?= $row['username']; ?></td>

@@ -382,7 +382,6 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                                         <?php echo number_format($user_data['emas'], 4, '.', '.'); ?> g =
                                         Rp. <?php echo round($gold_equivalent, 2); ?>
                                     </p>
-                                    <!-- <p><strong>Saldo Emas</strong> : <?php echo number_format($user_data['emas'], 4, ',', '.'); ?> g</p> -->
                                 </div>
                             </div>
                         <?php } else { ?>
@@ -421,72 +420,62 @@ include_once __DIR__ . '/../layouts/sidebar.php';
 
                         <!-- Form Tarik Saldo -->
                         <?php if (isset($user_data) && !is_null($user_data)) { ?>
-                            <form method="POST" action="index.php?page=tarik_saldo" target="notaWindow" onsubmit="window.open('', 'notaWindow').focus();">
-                                <!-- Withdrawal Type Selection -->
+                            <form method="POST" action="index.php?page=tarik_saldo" target="notaWindow" onsubmit="return validateWithdrawal();">
+                                <!-- Pilihan Jenis Penarikan -->
                                 <div class="row mb-4">
                                     <div class="col-md-8">
-                                        <label><input type="radio" name="withdraw_type" value="money" required> Tarik
-                                            Uang</label><br>
+                                        <label><input type="radio" name="withdraw_type" value="money" required> Tarik Uang</label><br>
                                         <label><input type="radio" name="withdraw_type" value="gold"> Tarik Emas</label>
                                     </div>
                                 </div>
 
-                                <!-- Amount Section (Dynamic based on selection) -->
+                                <!-- Input Penarikan -->
                                 <div class="row mb-4">
                                     <div class="col-md-8">
+
+                                        <!-- UANG -->
                                         <div id="money_input" style="display: none;">
                                             <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
-                                                </div>
+                                                <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
                                                 <input type="number" step="0.01" name="jumlah_uang" id="jumlah_uang"
                                                     class="form-control" placeholder="Jumlah Uang">
-
                                             </div>
-                                            <!-- <small class="form-text text-muted">Jumlah uang yang ingin ditarik</small>
-                                        tampilkan saldo dikurangi inputan yang ingin ditarik -->
-
-                                            <p id="sisa_saldo_uang" class="text-info"></p> <!-- Remaining money balance -->
+                                            <p id="sisa_saldo_uang" class="text-info"></p>
                                         </div>
 
+                                        <!-- EMAS -->
                                         <div id="gold_input" style="display: none;">
                                             <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="fas fa-coins"></i></span>
-                                                </div>
-                                                <!-- <label for="jumlah_emas">Jumlah Emas (gram)</label> -->
+                                                <span class="input-group-text"><i class="fas fa-coins"></i></span>
                                                 <select name="jumlah_emas" id="jumlah_emas" class="form-control">
-                                                    <option value="0.5">0.5 gram</option>
                                                     <option value="0.01">0.01 gram</option>
-
+                                                    <option value="0.5">0.5 gram</option>
                                                     <option value="1">1 gram</option>
                                                     <option value="2">2 gram</option>
                                                     <option value="5">5 gram</option>
                                                 </select>
                                             </div>
                                             <small class="form-text text-muted">Jumlah emas yang ingin ditarik</small>
-                                            <p id="sisa_saldo_emas" class="text-info" style="display: none;"></p>
-                                            <input type="hidden" id="current_balance_emas"
-                                                value="<?php echo $user_balance['emas']; ?>">
-                                            <!-- Remaining gold balance -->
+                                            <p id="sisa_saldo_emas" class="text-info"></p>
 
-                                            <input type="hidden" id="current_balance_uang"
-                                                value="<?php echo $user_balance['uang']; ?>">
+                                            <!-- Saldo Emas -->
                                             <input type="hidden" id="current_balance_emas"
-                                                value="<?php echo $user_balance['emas']; ?>">
-
+                                                value="<?= number_format((float)$user_data['emas'], 4, '.', ''); ?>">
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Hidden Field for User ID -->
-                                <input type="hidden" name="id_user" value="<?php echo $user_data['id']; ?>">
+                                <!-- ID User -->
+                                <input type="hidden" name="id_user" value="<?= $user_data['id']; ?>">
 
-                                <!-- Submit Button -->
+                                <!-- Saldo Uang -->
+                                <input type="hidden" id="current_balance_emas" value="<?= number_format((float)$user_data['emas'], 4, '.', '') ?>">
+
+
+                                <!-- Tombol -->
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <button type="submit" name="withdraw" class="btn btn-success" onclick="setTimeout(() => window.location.reload(), 500);">Tarik</button>
-                                        <!-- <a type="submit" name="withdraw" class="btn btn-success" href="nota.php" target="_blank">Tarik</a> -->
+                                        <button type="submit" name="withdraw" class="btn btn-success">Tarik</button>
                                     </div>
                                 </div>
                             </form>
@@ -519,20 +508,24 @@ include_once __DIR__ . '/../layouts/sidebar.php';
             </script>
 
             <script>
-                // Show/hide input fields based on withdrawal type
+                // Ambil elemen radio untuk jenis penarikan
                 const withdrawTypeRadios = document.querySelectorAll('input[name="withdraw_type"]');
                 const moneyInput = document.getElementById('money_input');
                 const goldInput = document.getElementById('gold_input');
-                const sisaSaldoUang = document.getElementById('sisa_saldo_uang'); // Display remaining money balance
-                const sisaSaldoEmas = document.getElementById('sisa_saldo_emas'); // Display remaining gold balance
+
+                // Elemen untuk menampilkan sisa saldo
+                const sisaSaldoUang = document.getElementById('sisa_saldo_uang');
+                const sisaSaldoEmas = document.getElementById('sisa_saldo_emas');
+
+                // Inputan jumlah
                 const jumlahEmasSelect = document.getElementById('jumlah_emas');
                 const jumlahUangInput = document.getElementById('jumlah_uang');
 
-                // Saldo yang diambil dari input hidden
+                // Nilai saldo dari input hidden (pastikan ini ada di HTML kamu)
                 const currentBalanceEmas = parseFloat(document.getElementById('current_balance_emas').value);
-                const currentGoldPriceSell = parseFloat(<?php echo $current_gold_price_sell; ?>); // Gold price for selling
+                const currentGoldPriceSell = parseFloat(<?php echo $current_gold_price_sell; ?>); // harga jual emas per gram
 
-                // Function to show/hide the correct input field based on the selected withdrawal type
+                // Fungsi untuk menampilkan input sesuai pilihan
                 withdrawTypeRadios.forEach(radio => {
                     radio.addEventListener('change', function() {
                         if (this.value === 'money') {
@@ -540,49 +533,51 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                             goldInput.style.display = 'none';
                             sisaSaldoEmas.style.display = 'none';
                             sisaSaldoUang.style.display = 'block';
+                            sisaSaldoUang.textContent = '';
                         } else if (this.value === 'gold') {
                             moneyInput.style.display = 'none';
                             goldInput.style.display = 'block';
                             sisaSaldoUang.style.display = 'none';
                             sisaSaldoEmas.style.display = 'block';
+                            sisaSaldoEmas.textContent = '';
                         }
                     });
                 });
 
-                // Update remaining gold balance when the user selects an amount of gold
-                jumlahEmasSelect.addEventListener('change', function() {
-                    const selectedAmount = parseFloat(this.value);
-                    const remainingBalance = currentBalanceEmas - selectedAmount;
+                // // Hitung sisa saldo emas jika tarik dalam gram
+                // jumlahEmasSelect.addEventListener('change', function() {
+                //     const selectedAmount = parseFloat(this.value);
+                //     if (isNaN(selectedAmount)) {
+                //         sisaSaldoEmas.textContent = '';
+                //         return;
+                //     }
 
-                    if (remainingBalance < 0.1) {
-                        sisaSaldoEmas.textContent = `Saldo emas setelah penarikan: ${remainingBalance.toFixed(3)} gram (minimum saldo harus 0.1 gram)`;
-                        sisaSaldoEmas.classList.remove('text-info');
-                        sisaSaldoEmas.classList.add('text-danger');
-                    } else {
-                        sisaSaldoEmas.textContent = `Saldo emas setelah penarikan: ${remainingBalance.toFixed(3)} gram`;
-                        sisaSaldoEmas.classList.remove('text-danger');
-                        sisaSaldoEmas.classList.add('text-info');
-                    }
-                });
+                //     const remainingBalance = currentBalanceEmas - selectedAmount;
+                //     sisaSaldoEmas.textContent = `Saldo emas setelah penarikan: ${remainingBalance.toFixed(4)} gram`;
+                //     sisaSaldoEmas.classList.remove('text-danger');
+                //     sisaSaldoEmas.classList.add('text-info');
+                // });
 
-
-                // Update remaining balance when the user inputs money to withdraw
+                // // Hitung sisa saldo emas jika tarik dalam bentuk uang
                 // jumlahUangInput.addEventListener('input', function() {
                 //     const jumlahUang = parseFloat(this.value);
-                //     const emasToDeduct = jumlahUang / currentGoldPriceSell; // Convert money to gold
-                //     const remainingEmas = currentBalanceEmas - emasToDeduct;
-
-                //     if (remainingEmas < 0.1) {
-                //         sisaSaldoUang.textContent =
-                //             `Sisa emas setelah penarikan4: ${remainingEmas.toFixed(3)} gram (tidak boleh kurang dari 0.1 gram!)`;
-                //         sisaSaldoUang.classList.add('text-danger');
-                //     } else {
-                //         sisaSaldoUang.textContent = `Sisa emas setelah penarikan2: ${remainingEmas.toFixed(3)} gram`;
-                //         sisaSaldoUang.classList.remove('text-danger');
-                //         sisaSaldoUang.classList.add('text-info');
+                //     if (isNaN(jumlahUang)) {
+                //         sisaSaldoUang.textContent = '';
+                //         return;
                 //     }
+
+                //     const emasToDeduct = jumlahUang / currentGoldPriceSell;
+                //     const remainingEmas = currentBalanceEmas - emasToDeduct;
+                //     sisaSaldoUang.textContent = `Saldo emas setelah penarikan: ${remainingEmas.toFixed(4)} gram`;
+                //     sisaSaldoUang.classList.remove('text-danger');
+                //     sisaSaldoUang.classList.add('text-info');
                 // });
             </script>
+
+
+
+
+
 
         </main>
         <!-- MAIN -->

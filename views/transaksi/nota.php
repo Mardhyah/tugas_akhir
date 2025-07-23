@@ -190,29 +190,31 @@ function isEncryptedAES($str)
 
             <!-- berikut adalah nota untuk tarik.php -->
             <?php if ($transaksi['jenis_transaksi'] == 'tarik_saldo' && !empty($tarik_saldo)): ?>
-                <!-- berikut adalah nota untuk konversi.php -->
                 <hr>
-                <p><strong>Jenis Saldo :</strong> <?php echo htmlspecialchars($tarik_saldo['jenis_saldo']); ?></p>
+                <p><strong>Jenis Saldo :</strong> <?= htmlspecialchars($tarik_saldo['jenis_saldo']); ?></p>
                 <p><strong>Jumlah Tarik Saldo:</strong>
                     <?php
                     $jumlahTarik = $tarik_saldo['jumlah_tarik'];
 
                     // Cek apakah terenkripsi
-                    if (isEncryptedAES($jumlahTarik)) {
-                        $jumlahTarik = decryptWithAES($jumlahTarik);
-                    }
-
-                    // Tampilkan hasil
                     if (is_numeric($jumlahTarik)) {
-                        echo 'Rp ' . number_format((float)$jumlahTarik, 0, ',', '.');
+                        $jenisSaldoLower = strtolower($tarik_saldo['jenis_saldo']);
+                        if ($jenisSaldoLower === 'emas' || $jenisSaldoLower === 'tarik_emas') {
+                            // Jika jenis saldo emas (termasuk tarik_emas), tampilkan dalam gram
+                            echo number_format((float)$jumlahTarik, 2, ',', '.') . ' gram';
+                        } else {
+                            // Selain emas, tampilkan dalam rupiah
+                            echo 'Rp ' . number_format((float)$jumlahTarik, 0, ',', '.');
+                        }
                     } else {
                         echo '❌ gagal dekripsi';
                     }
+
                     ?>
                 </p>
                 <hr>
-
             <?php endif; ?>
+
 
             <!-- berikut adalah nota untuk setor_sampah.php -->
             <?php if ($transaksi['jenis_transaksi'] == 'setor_sampah' && !empty($items)): ?>
