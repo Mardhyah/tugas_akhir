@@ -1,11 +1,9 @@
 <?php
 require_once 'crypto_helper.php';
 
-$encryptedValue = 'L2I305MNJ3YnMbfIJeEquMTPDiTQBbydkwXG9adTsbyOt78RNUYrv949w0pJO5bKFCgUo+3rVpNfFz+IPvbLUYk0P20LfIh0JhBIrmpBSns=';
+$encrypted = 'DZB+KlKpcdS4zyK0wtZSqS32x1FlPeGsmn09PiqDDLUK0kSyVUKnHAMhB5SBoZndg6Xpx09FzVT4psFoyjVqLQ==';
+$decrypted = decryptWithAES($encrypted);
+echo "HASIL DEKRIPSI: " . $decrypted;
 
-try {
-    $decrypted = decryptWithAES($encryptedValue);
-    echo "✅ Sukses Dekripsi: $decrypted\n";
-} catch (Exception $e) {
-    echo "❌ Gagal Dekripsi: " . $e->getMessage();
-}
+$jumlah = "0.5";
+$data_terenkripsi = encryptWithAES("EMAS:" . $jumlah);  // hasil: EMAS:0.5

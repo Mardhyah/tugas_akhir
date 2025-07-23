@@ -461,25 +461,33 @@ if ($jenis_result->num_rows > 0) {
                         <?php } ?>
 
 
-                        <form method="POST" action="">
+                        <form method="POST" action="index.php?page=setor_sampah" target="notaWindow" onsubmit="window.open('', 'notaWindow').focus();">
+
                             <?php if (isset($user_data)) { ?>
                                 <input type="hidden" name="user_id" value="<?php echo $user_data['id']; ?>">
                             <?php } ?>
                             <div class="row smb-4">
                                 <div class="col-md-4">
-                                    <input type="date" name="tanggal" class="form-control"
+                                    <!-- Tampil di form tapi tidak terkirim -->
+                                    <input type="date" class="form-control"
                                         value="<?php echo date('Y-m-d'); ?>" disabled>
+                                    <!-- Terkirim ke server -->
+                                    <input type="hidden" name="tanggal" value="<?php echo date('Y-m-d'); ?>">
                                 </div>
+
                                 <div class="col-md-4">
                                     <?php
-                                    // Set zona waktu ke WIB (UTC+7)
                                     date_default_timezone_set('Asia/Jakarta');
                                     $current_time = date('H:i');
                                     ?>
-                                    <input type="time" name="waktu" class="form-control"
+                                    <!-- Tampil di form tapi tidak terkirim -->
+                                    <input type="time" class="form-control"
                                         value="<?php echo $current_time; ?>" disabled>
+                                    <!-- Terkirim ke server -->
+                                    <input type="hidden" name="waktu" value="<?php echo $current_time; ?>">
                                 </div>
                             </div>
+
 
                             <div class="row mb-4">
                                 <div class="col-md-4">
@@ -565,7 +573,7 @@ if ($jenis_result->num_rows > 0) {
                                 </tfoot>
                             </table>
                             <button type="button" class="btn btn-dark mb-3" onclick="addRow()">Tambah Baris</button>
-                            <button type="submit" name="submit" class="btn btn-primary mb-3">SUBMIT</button>
+                            <button type="submit" name="submit" class="btn btn-primary mb-3" onclick="setTimeout(() => window.location.reload(), 500);">SUBMIT</button>
                         </form>
                     </div>
                     <!-- End of Form Section -->
@@ -582,42 +590,11 @@ if ($jenis_result->num_rows > 0) {
     </section>
     <!-- CONTENT -->
     <script>
-        let notaWindow = null; // untuk menyimpan tab nota
-
-        function submitSetor() {
-            const form = document.getElementById('formSetor');
-            const formData = new FormData(form);
-
-            fetch('proses_setor.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success' && data.id_transaksi) {
-                        const notaUrl = 'nota.php?id_transaksi=' + data.id_transaksi;
-
-                        // Jika tab nota belum dibuka atau sudah ditutup, buka baru
-                        if (!notaWindow || notaWindow.closed) {
-                            notaWindow = window.open(notaUrl, '_blank');
-                        } else {
-                            // Kalau sudah dibuka, arahkan ulang ke nota terbaru
-                            notaWindow.location.href = notaUrl;
-                            notaWindow.focus();
-                        }
-
-                        // Optional: Reset form atau tampilkan pesan sukses
-                        alert('Transaksi berhasil!');
-                    } else {
-                        alert('Gagal menyimpan transaksi!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan saat mengirim data!');
-                });
+        if (window.opener) {
+            window.opener.location.reload();
         }
     </script>
+
 
 
     <script src="script.js"></script>

@@ -166,10 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['withdraw'])) {
 
                     // Redirect to nota.php
 
-                    echo "<script>
-                            window.open('index.php?page=nota&id_transaksi=$id', '_blank');
-                            window.location.href='index.php?page=tarik_saldo';
-                            </script>";
+                    header("Location: index.php?page=nota&id_transaksi=$id");
                     exit;
                 } catch (Exception $e) {
                     // Rollback transaction in case of an error
@@ -424,7 +421,7 @@ include_once __DIR__ . '/../layouts/sidebar.php';
 
                         <!-- Form Tarik Saldo -->
                         <?php if (isset($user_data) && !is_null($user_data)) { ?>
-                            <form method="POST" action="">
+                            <form method="POST" action="index.php?page=tarik_saldo" target="notaWindow" onsubmit="window.open('', 'notaWindow').focus();">
                                 <!-- Withdrawal Type Selection -->
                                 <div class="row mb-4">
                                     <div class="col-md-8">
@@ -488,7 +485,7 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                                 <!-- Submit Button -->
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <button type="submit" name="withdraw" class="btn btn-success">Tarik</button>
+                                        <button type="submit" name="withdraw" class="btn btn-success" onclick="setTimeout(() => window.location.reload(), 500);">Tarik</button>
                                         <!-- <a type="submit" name="withdraw" class="btn btn-success" href="nota.php" target="_blank">Tarik</a> -->
                                     </div>
                                 </div>
@@ -515,7 +512,11 @@ include_once __DIR__ . '/../layouts/sidebar.php';
             </div>
 
 
-
+            <script>
+                if (window.opener) {
+                    window.opener.location.reload();
+                }
+            </script>
 
             <script>
                 // Show/hide input fields based on withdrawal type
@@ -552,16 +553,18 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                 jumlahEmasSelect.addEventListener('change', function() {
                     const selectedAmount = parseFloat(this.value);
                     const remainingBalance = currentBalanceEmas - selectedAmount;
+
                     if (remainingBalance < 0.1) {
-                        sisaSaldoEmas.textContent =
-                            `Sisa emas setelah penarikan3: ${remainingBalance.toFixed(3)} gram (tidak boleh kurang dari 0.1 gram!)`;
+                        sisaSaldoEmas.textContent = `Saldo emas setelah penarikan: ${remainingBalance.toFixed(3)} gram (minimum saldo harus 0.1 gram)`;
+                        sisaSaldoEmas.classList.remove('text-info');
                         sisaSaldoEmas.classList.add('text-danger');
                     } else {
-                        sisaSaldoEmas.textContent = `Sisa emas setelah penarikan1: ${remainingBalance.toFixed(3)} gram`;
+                        sisaSaldoEmas.textContent = `Saldo emas setelah penarikan: ${remainingBalance.toFixed(3)} gram`;
                         sisaSaldoEmas.classList.remove('text-danger');
                         sisaSaldoEmas.classList.add('text-info');
                     }
                 });
+
 
                 // Update remaining balance when the user inputs money to withdraw
                 // jumlahUangInput.addEventListener('input', function() {
