@@ -1,12 +1,9 @@
 <?php
-$current_page = $_GET['page'] ?? '';
-?>
-
-<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include_once __DIR__ . '/../layouts/header.php';
 include_once __DIR__ . '/../../config/koneksi.php';
-
-
 
 // Ambil data role dari session jika pengguna login
 $loggedInRole = isset($_SESSION['role']) ? $_SESSION['role'] : null;
@@ -103,12 +100,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mysqli_stmt_bind_param($insert_stmt, "ssssssssssssssi", $username, $hashed_password, $nama, $role, $email, $notelp, $nik, $alamat, $tgl_lahir, $kelamin, $new_no_rek, $status, $gol, $bidang, $nip);
 
             if (mysqli_stmt_execute($insert_stmt)) {
-                $_SESSION['message'] = "Tambah admin berhasil";
-                header("location: index.php?page=tambah_nasabah");
+                $_SESSION['message'] = "register berhasil";
+                header("location: index.php?page=register_nasabah");
                 exit;
             } else {
-                $_SESSION['message'] = "Gagal menambah admin";
-                header("location: index.php?page=tambah_nasabah");
+                $_SESSION['message'] = "Gagal register";
+                header("location: index.php?page=register_nasabah");
                 exit;
             }
 
@@ -125,182 +122,372 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Nasabah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Boxicons -->
-    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <!-- My CSS -->
-    <link rel="stylesheet" href="../../assets/css/style.css">
-    <title>AdminHub</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #f2f2f2;
+        }
+
+        /* CONTAINER UTAMA */
+        .container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* FORM SECTION */
+        .signin-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 40px;
+            position: relative;
+            background-color: #ffffff;
+        }
+
+        .signin-section h2 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* FORM WRAPPER */
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+            padding-right: 10px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* FORM */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .inputbtn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-cancel {
+            background-color: #ccc;
+            color: black;
+        }
+
+        .btn-cancel:hover {
+            background-color: #aaa;
+        }
+
+        .inputbtn[type="submit"],
+        .inputbtn:not(.btn-cancel) {
+            background-color: #25745A;
+            color: white;
+        }
+
+        .inputbtn[type="submit"]:hover,
+        .inputbtn:not(.btn-cancel):hover {
+            background-color: #1e5e49;
+        }
+
+        /* INFO SECTION */
+        .info-section {
+            flex: 1;
+            background: #25745A;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .info-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .info-section p {
+            max-width: 500px;
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+        /* Responsif Mobile */
+        /* Responsif Mobile dan Tablet */
+        @media (max-width: 900px) {
+
+            html,
+            body {
+                height: auto;
+                overflow-y: auto;
+            }
+
+            .container {
+                flex-direction: column;
+                height: auto;
+                overflow-y: auto;
+            }
+
+            .signin-section,
+            .info-section {
+                width: 100%;
+                min-height: auto;
+                padding: 30px 20px;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .info-section {
+                order: -1;
+                /* Pindahkan info-section ke atas di mobile */
+                padding: 40px 20px;
+            }
+
+            .info-section h2 {
+                font-size: 28px;
+            }
+
+            .info-section p {
+                font-size: 16px;
+            }
+
+            .signin-section h2 {
+                font-size: 28px;
+            }
+
+            .form-container {
+                max-height: none;
+                overflow-y: visible;
+                padding-right: 0;
+            }
+
+            .inputbtn,
+            .btn-signup {
+                width: 100%;
+                text-align: center;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+
+        .btn-signup {
+            margin-top: 40px;
+            padding: 14px 28px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 35px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-signup:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
 
-
-
-
 <body>
+    <div class="container">
+        <div class="signin-section">
 
-    <!-- CONTENT -->
-    <section id="content">
-        <!-- NAVBAR -->
+            <h2>Form Pendaftaran Nasabah</h2>
+            <div class="form-container">
 
-        <!-- NAVBAR -->
+                <form method="POST" action="" class="form-scrollable">
 
-        <!-- MAIN -->
-        <main>
-            <!-- <div class="head-title">
-                <div class="left">
-                    <span>Halaman</span>
-                    <h1>Tambah Nasabah</h1>
-                </div>
-            </div> -->
-
-            <div class="container">
-
-                <form method="POST" action="">
                     <div class="form-group">
                         <div class="form-field">
                             <label>Username</label>
-                            <input type="text" name="username" id="username" class="form-input" placeholder="username" value="<?= htmlspecialchars($username); ?>" required />
+                            <input type="text" name="username" placeholder="Username" required />
                         </div>
-                        <div class=" form-field">
+                        <div class="form-field">
                             <label>Nama</label>
-                            <input type="text" name="nama" class="form-input" placeholder="Nama" required />
+                            <input type="text" name="nama" placeholder="Nama Lengkap" required />
                         </div>
                         <div class="form-field">
                             <label>Password</label>
-                            <input type="password" name="password" id="password" class="form-input-nasabah" placeholder="Password" value="<?= htmlspecialchars($nama); ?>" required />
+                            <input type="password" name="password" placeholder="Password" required />
                         </div>
                         <div class="form-field">
                             <label>Tanggal Lahir</label>
-                            <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-input-nasabah" value="<?= htmlspecialchars($tgl_lahir); ?>" required />
+                            <input type="date" name="tgl_lahir" required />
                         </div>
                         <div class="form-field">
                             <label>Email</label>
-                            <input type="email" name="email" class="form-input" placeholder="email@example.com" required />
+                            <input type="email" name="email" placeholder="email@example.com" required />
                         </div>
                         <div class="form-field">
                             <label>Jenis Kelamin</label>
-                            <select name="kelamin" id="kelamin" class="form-input" required>
+                            <select name="kelamin" required>
                                 <option value="">Pilih Jenis Kelamin</option>
-                                <option value="Laki-Laki" <?= $kelamin == 'Laki-Laki' ? 'selected' : '' ?>>Laki-Laki</option>
-                                <option value="Perempuan" <?= $kelamin == 'Perempuan' ? 'selected' : '' ?>>Perempuan</option>
+                                <option value="Laki-Laki">Laki-Laki</option>
+                                <option value="Perempuan">Perempuan</option>
                             </select>
                         </div>
                         <div class="form-field">
                             <label>Bidang</label>
-                            <input type="text" name="bidang" id="bidang" class="form-input" placeholder="Bidang" />
+                            <input type="text" name="bidang" placeholder="Bidang" />
                         </div>
-
                         <div class="form-field">
                             <label>NIK</label>
-                            <input type="text" name="nik" id="nik" class="form-input" placeholder="NIK" maxlength="16" pattern="\d{16}" title="NIK harus terdiri dari 16 digit angka" required />
+                            <input type="text" name="nik" placeholder="NIK (16 digit)" maxlength="16" pattern="\d{16}" title="NIK harus terdiri dari 16 digit angka" required />
                         </div>
-
                         <div class="form-field">
                             <label>No. Telp</label>
-                            <input type="text" name="notelp" id="notelp" class="form-input-nasabah" placeholder="08..." value="<?= htmlspecialchars($notelp); ?>" required />
+                            <input type="text" name="notelp" placeholder="08..." required />
                         </div>
-
-                        <!-- Status Kepegawaian -->
                         <div class="form-field">
                             <label>Status Kepegawaian</label>
-                            <select name="status_gol" id="status_gol" onchange="toggleGolongan()" class="form-input" required>
+                            <select name="status_gol" id="status_gol" onchange="toggleGolongan()" required>
                                 <option value="">Pilih Status</option>
                                 <option value="PNS">PNS</option>
                                 <option value="Honorer">Non-PNS</option>
                             </select>
                         </div>
 
-                        <!-- Golongan (hanya untuk PNS) -->
                         <div class="form-group" id="golongan_nip_wrapper" style="display: none;">
-                            <!-- Golongan (untuk PNS) -->
                             <div class="form-field">
-                                <label for="gol">Golongan</label>
-                                <select name="gol" id="gol" class="form-input">
+                                <label>Golongan</label>
+                                <select name="gol">
                                     <option value="">Pilih Golongan</option>
                                     <option value="I/A">I/A</option>
                                     <option value="I/B">I/B</option>
-                                    <option value="I/C">I/C</option>
-                                    <option value="I/D">I/D</option>
                                     <option value="II/A">II/A</option>
                                     <option value="II/B">II/B</option>
-                                    <option value="II/C">II/C</option>
-                                    <option value="II/D">II/D</option>
                                     <option value="III/A">III/A</option>
                                     <option value="III/B">III/B</option>
-                                    <option value="III/C">III/C</option>
-                                    <option value="III/D">III/D</option>
                                     <option value="IV/A">IV/A</option>
-                                    <option value="IV/B">IV/B</option>
-                                    <option value="IV/C">IV/C</option>
-                                    <option value="IV/D">IV/D</option>
-                                    <option value="IV/E">IV/E</option>
                                 </select>
                             </div>
-
-                            <!-- NIP (untuk PNS) -->
                             <div class="form-field">
-                                <label for="nip">NIP</label>
-                                <input type="text" name="nip" id="nip" class="form-input" placeholder="NIP">
+                                <label>NIP</label>
+                                <input type="text" name="nip" placeholder="NIP" />
                             </div>
                         </div>
 
-
-                        <!-- Script untuk menampilkan/menyembunyikan berdasarkan status -->
-                        <script>
-                            function toggleGolongan() {
-                                const status = document.getElementById("status_gol").value;
-                                const wrapper = document.getElementById("golongan_nip_wrapper");
-
-                                if (status === "PNS") {
-                                    wrapper.style.display = "flex";
-                                } else {
-                                    wrapper.style.display = "none";
-                                }
-                            }
-
-                            // Jalankan saat halaman dimuat (misalnya saat edit)
-                            window.addEventListener('DOMContentLoaded', toggleGolongan);
-                        </script>
-
-
-
-
-                        <div class="form-field full-width">
-                            <label>Alamat</label>
-                            <textarea name="alamat" id="alamat" class="form-input-nasabah" placeholder="Alamat lengkap..." required><?= htmlspecialchars($alamat); ?></textarea>
-                        </div>
-                    </div>
-                    <?php if (isset($loggedInRole)): ?>
                         <div class="form-field">
-                            <label for="role">Role</label>
-                            <select name="role" id="role" class="form-input">
-                                <?php foreach ($roles as $role): ?>
-                                    <option value="<?= $role ?>"><?= ucfirst($role) ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <label>Alamat</label>
+                            <textarea name="alamat" placeholder="Alamat lengkap..." rows="3" required></textarea>
                         </div>
-                    <?php endif; ?>
 
-
-                    <div class="form-actions">
-                        <button type="reset" class="inputbtn btn-cancel">Batal</button>
-                        <button type="submit" class="inputbtn">Simpan</button>
+                        <div class="form-actions">
+                            <button type="submit" class="inputbtn">Daftar</button>
+                        </div>
                     </div>
-
-
                 </form>
             </div>
+        </div>
+        <div class="info-section">
+            <h2>Selamat Datang!</h2>
+            <p>Silakan isi data lengkap Anda untuk mendaftar sebagai nasabah. Kami akan menjaga kerahasiaan data Anda.</p>
+            <button class="btn-signup" onclick="window.location='index.php?page=login'">Sudah punya akun? Login</button>
 
+        </div>
+    </div>
 
+    <script>
+        function toggleGolongan() {
+            const status = document.getElementById("status_gol").value;
+            const wrapper = document.getElementById("golongan_nip_wrapper");
+            wrapper.style.display = status === "PNS" ? "flex" : "none";
+        }
+        window.addEventListener('DOMContentLoaded', toggleGolongan);
+    </script>
 
+    <script>
+        const form = document.getElementById('myForm');
 
-        </main>
-        <!-- MAIN -->
-    </section>
-    <!-- CONTENT -->
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
+            // Simulasi validasi
+            const isValid = true;
 
-    <script src="script.js"></script>
+            if (isValid) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Form berhasil dikirim.',
+                    confirmButtonColor: '#25745A'
+                });
+                form.reset();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: 'Form gagal dikirim. Coba periksa kembali isian.',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    </script>
 
 </body>
+
+</html>

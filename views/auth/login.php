@@ -167,7 +167,7 @@ if (isset($_POST['login'])) {
                 <div class="form-group">
                     <input type="password" name="password" placeholder="Password" required>
                 </div>
-                <button type="submit" name="login" class="btn-login">Signin</button>
+                <button type="submit" name="login" class="btn-login">Login</button>
             </form>
 
         </div>
