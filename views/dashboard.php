@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/layouts/sidebar.php';
 include_once __DIR__ . '/../fungsi.php';
-require_once __DIR__ . '/../crypto/crypto_helper.php';
+require_once __DIR__ . '/../crypto/core/crypto_helper.php';
 // Cek apakah pengguna sudah login
 checkSession();
 

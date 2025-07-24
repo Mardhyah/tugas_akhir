@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/koneksi_cryptostore.php';
+require_once __DIR__ . '/..//../config/koneksi_cryptostore.php';
 require_once __DIR__ . '/RSA.php';  // Pastikan ini adalah class XRsa
 require_once __DIR__ . '/AES.php';          // File AES yang kamu punya
 
@@ -33,7 +33,7 @@ function getAesInstanceFromDatabase(): AES
     }
 
     // Ambil RSA private key
-    $privateKeyPath = __DIR__ . '/rsa_keys/private.pem';
+    $privateKeyPath = __DIR__ . '/../rsa_keys/private.pem';
     $privateKey = file_get_contents($privateKeyPath);
     if (!$privateKey) {
         throw new Exception("❌ Gagal membaca RSA private key dari $privateKeyPath");

@@ -1,5 +1,5 @@
 <?php
-$publicKey = file_get_contents(__DIR__ . '/rsa_keys/public.pem');
+$publicKey = file_get_contents(__DIR__ . '/../rsa_keys/public.pem');
 if (!$publicKey) {
     echo "❌ Gagal baca public key\n";
     exit;

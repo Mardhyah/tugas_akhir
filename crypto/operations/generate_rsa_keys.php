@@ -1,10 +1,10 @@
 <?php
 // Lokasi simpan file kunci
-$privateKeyPath = __DIR__ . '/rsa_keys/private.pem';
-$publicKeyPath = __DIR__ . '/rsa_keys/public.pem';
+$privateKeyPath = __DIR__ . '/../rsa_keys/private.pem';
+$publicKeyPath = __DIR__ . '/../rsa_keys/public.pem';
 
 // Pastikan folder rsa_keys ada
-$rsaKeyDir = __DIR__ . '/rsa_keys';
+$rsaKeyDir = __DIR__ . '/../rsa_keys';
 if (!is_dir($rsaKeyDir)) {
     mkdir($rsaKeyDir, 0755, true);
 }

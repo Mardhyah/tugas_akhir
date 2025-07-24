@@ -1,5 +1,5 @@
 <?php
-require_once 'RSA.php';
+require_once __DIR__ . '/../core/RSA.php';
 
 use XRsa\XRsa;
 

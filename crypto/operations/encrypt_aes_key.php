@@ -5,13 +5,13 @@ require_once 'RSA.php'; // class XRsa
 use XRsa\XRsa;
 
 // Baca public key
-$publicKey = file_get_contents(__DIR__ . '/rsa_keys/public.pem');
+$publicKey = file_get_contents(__DIR__ . '/../rsa_keys/public.pem');
 if (!$publicKey) {
     die("❌ Gagal membaca public.pem");
 }
 
 // Baca AES key dari file dan decode dari base64
-$aesKeyBase64 = file_get_contents(__DIR__ . '/original_aes.txt');
+$aesKeyBase64 = file_get_contents(__DIR__ . '/../data/original_aes.txt');
 if (!$aesKeyBase64) {
     die("❌ Gagal membaca original_aes.txt");
 }

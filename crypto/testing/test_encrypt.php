@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/crypto_helper.php';
+require_once __DIR__ . '/../core/crypto_helper.php';
 
 echo "🧪 Memulai pengujian enkripsi dan dekripsi dengan AES dari database...\n";
 
