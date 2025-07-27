@@ -1,7 +1,7 @@
 <?php
-include_once __DIR__ . '/layouts/sidebar.php';
-include_once __DIR__ . '/../fungsi.php';
-require_once __DIR__ . '/../crypto/core/crypto_helper.php';
+include_once __DIR__ . '/../layouts/sidebar.php';
+include_once __DIR__ . '/..//../fungsi.php';
+require_once __DIR__ . '/..//../crypto/core/crypto_helper.php';
 // Cek apakah pengguna sudah login
 checkSession();
 
@@ -149,19 +149,32 @@ if ($resultChart->num_rows > 0) {
 }
 
 
-// Total Nasabah
-$queryNasabah = mysqli_query($koneksi, "SELECT COUNT(*) AS total_nasabah FROM user WHERE role = 'nasabah'");
+// Total nasabah aktif dan sudah diverifikasi
+$queryNasabah = mysqli_query($koneksi, "SELECT COUNT(*) AS total_nasabah FROM user WHERE role = 'nasabah' AND status = 1 AND is_verified = 1");
 $dataNasabah = mysqli_fetch_assoc($queryNasabah);
 $totalNasabah = $dataNasabah['total_nasabah'];
+
+// Total nasabah terverifikasi
+$queryVerified = mysqli_query($koneksi, "SELECT COUNT(*) AS total_verified FROM user WHERE role = 'nasabah' AND status = 1 AND is_verified = 1");
+$dataVerified = mysqli_fetch_assoc($queryVerified);
+$totalVerified = $dataVerified['total_verified'];
+
+// Total nasabah belum diverifikasi
+$queryPending = mysqli_query($koneksi, "SELECT COUNT(*) AS total_pending FROM user WHERE role = 'nasabah' AND status = 1 AND is_verified = 0");
+$dataPending = mysqli_fetch_assoc($queryPending);
+$totalPending = $dataPending['total_pending'];
+
 
 // Total Jual ke Pengepul
 $queryJual = mysqli_query($koneksi, "SELECT SUM(jumlah_rp) AS total_jual FROM jual_sampah");
 $dataJual = mysqli_fetch_assoc($queryJual);
 $totalJual = $dataJual['total_jual'] ?? 0;
 
-
+$notifQuery = mysqli_query($koneksi, "SELECT COUNT(*) as jumlah FROM user WHERE role = 'nasabah' AND is_verified = 0 AND status = 1");
+$notif = mysqli_fetch_assoc($notifQuery);
 // Close the statement
 $stmt->close();
+
 
 function isEncryptedFormat(string $text): bool
 {
@@ -409,6 +422,42 @@ function isEncryptedFormat(string $text): bool
             width: 100%;
         }
     }
+
+
+
+    .notif-badge {
+        position: absolute;
+        top: 20px;
+        /* semakin besar nilainya, semakin ke bawah */
+        left: 18px;
+        /* atur sesuai posisi ikon lonceng kamu */
+        background-color: red;
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 50%;
+        font-weight: bold;
+    }
+
+
+    .verif-button {
+        display: inline-block;
+        background-color: #fff7cc;
+        /* kuning muda */
+        color: #b58900;
+        /* gold/kuning gelap untuk teks */
+        padding: 4px 8px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+
+    .verif-button:hover {
+        background-color: #ffec99;
+        /* sedikit lebih terang saat hover */
+    }
 </style>
 
 
@@ -420,10 +469,12 @@ function isEncryptedFormat(string $text): bool
     <!-- CONTENT -->
     <section id="content">
         <!-- NAVBAR -->
-        <nav>
+        <nav class="navbar">
             <i class='bx bx-menu'></i>
 
+
         </nav>
+
         <!-- NAVBAR -->
 
         <!-- MAIN -->
@@ -444,14 +495,24 @@ function isEncryptedFormat(string $text): bool
                             <p>Total Nasabah</p>
                         </span>
                     </li>
-                    <li>
-                        <i class='bx bxs-dollar-circle'></i>
+
+                    <li style="position: relative;">
+                        <i class='bx bxs-bell-ring'></i>
+                        <span class="notif-badge"><?= $notif['jumlah']; ?></span>
                         <span class="text">
-                            <h3>Rp <?php echo number_format($totalJual, 2, ',', '.'); ?></h3>
-                            <p>Total Jual ke Pengepul</p>
+                            <h3><?= $notif['jumlah']; ?></h3>
+                            <a href="index.php?page=notifikasi_nasabah" class="verif-button">Yang Harus Diverifikasi</a>
                         </span>
                     </li>
+
+
+
+
+
                 <?php endif; ?>
+
+
+
 
                 <?php if ($_SESSION['role'] === 'nasabah') : ?>
                     <div class="nasabah-info-wide-card">
@@ -532,9 +593,9 @@ function isEncryptedFormat(string $text): bool
                     <div class="head">
                         <div class="grafik-penyetoran">
                             <?php if ($data['role'] == 'nasabah'): ?>
-                                <h3>Grafi Setor Sampah Bulanan</h3>
+                                <h3>Grafi Setor Sampah Bulanan</h3><br><br>
                             <?php else: ?>
-                                <h3>Grafik Jual Sampah Bulanan</h3>
+                                <h3>Grafik Jual Sampah Bulanan</h3><br><br>
                             <?php endif; ?>
                             <canvas id="setorSampahChart"></canvas>
                         </div>

@@ -16,20 +16,27 @@ if (isset($_POST['login'])) {
     $data = mysqli_fetch_assoc($query);
 
     if ($data) {
-        // Verifikasi password dengan password_verify()
+        // Verifikasi password terlebih dahulu
         if (password_verify($password, $data['password'])) {
-            // Password benar, simpan session
+            // Jika role bukan admin atau superadmin, cek apakah akun sudah diverifikasi
+            if (($data['role'] == 'nasabah' || $data['role'] == 'user') && $data['is_verified'] != 1) {
+                echo "<script>alert('Akun Anda belum diverifikasi.'); window.location='login.php';</script>";
+                exit;
+            }
+
+            // Login berhasil
             $_SESSION['id'] = $data['id'];
             $_SESSION['username'] = $data['username'];
             $_SESSION['role'] = $data['role'];
-
             header("Location: index.php?page=dashboard");
             exit;
         } else {
+            // Password salah
             echo "<script>alert('Username atau Password salah'); window.location='login.php';</script>";
             exit;
         }
     } else {
+        // Username tidak ditemukan
         echo "<script>alert('Username atau Password salah'); window.location='login.php';</script>";
         exit;
     }

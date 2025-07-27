@@ -93,11 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             // Masukkan data ke database
-            $insert_query = "INSERT INTO user (username, password, nama, role, email, notelp, nik, alamat, tgl_lahir, kelamin, no_rek, status, gol, bidang, nip) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insert_query = "INSERT INTO user (username, password, nama, role, email, notelp, nik, alamat, tgl_lahir, kelamin, no_rek, status, gol, bidang, nip, is_verified) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+
+            $is_verified = 0; // Tambahkan ini sebelum bind_param
 
             $insert_stmt = mysqli_prepare($koneksi, $insert_query);
-            mysqli_stmt_bind_param($insert_stmt, "ssssssssssssssi", $username, $hashed_password, $nama, $role, $email, $notelp, $nik, $alamat, $tgl_lahir, $kelamin, $new_no_rek, $status, $gol, $bidang, $nip);
+            mysqli_stmt_bind_param($insert_stmt, "ssssssssssssssii", $username, $hashed_password, $nama, $role, $email, $notelp, $nik, $alamat, $tgl_lahir, $kelamin, $new_no_rek, $status, $gol, $bidang, $nip, $is_verified);
 
             if (mysqli_stmt_execute($insert_stmt)) {
                 $_SESSION['message'] = "register berhasil";

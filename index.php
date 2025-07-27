@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/koneksi.php';
+require_once(__DIR__ . '/config/koneksi.php');
 
 // ambil halaman yang diminta
 $page = $_GET['page'] ?? 'dashboard'; // kalau kosong, ke dashboard
@@ -8,7 +8,10 @@ $page = $_GET['page'] ?? 'dashboard'; // kalau kosong, ke dashboard
 // router sederhana
 switch ($page) {
     case 'dashboard':
-        include 'views/dashboard.php';
+        include 'views/dashboard/dashboard.php';
+        break;
+    case 'notifikasi_nasabah':
+        include 'views/dashboard/notifikasi_nasabah.php';
         break;
     case 'sampah':
         include 'views/sampah/index_sampah.php';

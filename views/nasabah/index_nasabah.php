@@ -52,7 +52,10 @@ if (isset($_GET['restore_all'])) {
 }
 
 // ========= HITUNG JUMLAH TOTAL DATA =========
-$total_query = "SELECT COUNT(*) AS total FROM user WHERE role = 'nasabah' AND status = 1";
+$total_query = "SELECT COUNT(*) AS total 
+                FROM user 
+                WHERE role = 'nasabah' AND status = 1 AND is_verified = 1";
+
 if (!empty($search_nama)) {
     $search_escaped = mysqli_real_escape_string($koneksi, $search_nama);
     $total_query .= " AND nama LIKE '%$search_escaped%'";
@@ -70,7 +73,10 @@ if ($end_page - $start_page < $pagination_limit - 1) {
 }
 
 // ========= AMBIL DATA NASABAH AKTIF =========
-$query = "SELECT id, username, nama, email, notelp, nik, no_rek FROM user WHERE role = 'nasabah' AND status = 1";
+$query = "SELECT id, username, nama, email, notelp, nik, no_rek, is_verified 
+          FROM user 
+          WHERE role = 'nasabah' AND status = 1 AND is_verified = 1";
+
 if (!empty($search_nama)) {
     $query .= " AND nama LIKE '%$search_nama%'";
 }
