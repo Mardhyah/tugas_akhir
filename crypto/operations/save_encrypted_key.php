@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/../config/koneksi_cryptostore.php';
+require_once __DIR__ . '/../../config/koneksi_cryptostore.php';
 
 // Baca AES key terenkripsi dari file
-$encryptedAESBase64 = file_get_contents(__DIR__ . '/../data//aes_encrypted_by_rsa.txt');
+$encryptedAESBase64 = file_get_contents(__DIR__ . '/../data/aes_encrypted_by_rsa.txt');
 if (!$encryptedAESBase64) {
     die("❌ Gagal membaca file aes_encrypted_by_rsa.txt");
 }

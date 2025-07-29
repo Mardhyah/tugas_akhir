@@ -20,37 +20,18 @@ class XRsa
         if ($this->public_key) {
             $pub_id = openssl_pkey_get_public($this->public_key);
             if (!$pub_id) {
-                throw new \Exception("❌ Public key tidak valid atau gagal dibaca.");
+                throw new \Exception("Public key tidak valid atau gagal dibaca.");
             }
             $this->key_len = openssl_pkey_get_details($pub_id)['bits'];
         } elseif ($this->private_key) {
             $pri_id = openssl_pkey_get_private($this->private_key);
             if (!$pri_id) {
-                throw new \Exception("❌ Private key tidak valid atau gagal dibaca.");
+                throw new \Exception("Private key tidak valid atau gagal dibaca.");
             }
             $this->key_len = openssl_pkey_get_details($pri_id)['bits'];
         } else {
-            throw new \Exception("❌ Minimal salah satu dari public atau private key harus disediakan.");
+            throw new \Exception("Minimal salah satu dari public atau private key harus disediakan.");
         }
-    }
-
-
-
-    public static function createKeys($key_size = 2048)
-    {
-        $config = array(
-            "private_key_bits" => $key_size,
-            "private_key_type" => self::RSA_ALGORITHM_KEY_TYPE,
-        );
-        $res = openssl_pkey_new($config);
-        openssl_pkey_export($res, $private_key);
-        $public_key_detail = openssl_pkey_get_details($res);
-        $public_key = $public_key_detail["key"];
-
-        return [
-            "public_key" => $public_key,
-            "private_key" => $private_key,
-        ];
     }
 
     public function publicEncrypt($data)
@@ -114,7 +95,7 @@ class XRsa
     }
 }
 
-// Tambahkan ini setelah class XRsa:
+// Fungsi pembantu Base64 URL Safe
 if (! function_exists('url_safe_base64_encode')) {
     function url_safe_base64_encode($data)
     {

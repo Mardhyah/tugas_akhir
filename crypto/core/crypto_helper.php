@@ -36,7 +36,7 @@ function getAesInstanceFromDatabase(): AES
     $privateKeyPath = __DIR__ . '/../rsa_keys/private.pem';
     $privateKey = file_get_contents($privateKeyPath);
     if (!$privateKey) {
-        throw new Exception("❌ Gagal membaca RSA private key dari $privateKeyPath");
+        throw new Exception("Gagal membaca RSA private key dari $privateKeyPath");
     }
 
     // Dekripsi AES dengan RSA

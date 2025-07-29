@@ -334,12 +334,12 @@ untuk
 
                             </div>
 
-                            <div class="row align-items-start">
+                            <!-- <div class="row align-items-start">
                                 <div class="user--info">
                                     <h3 class="main--title">Data Nasabah</h3>
                                     <a href="index.php?page=tambah_nasabah"><button type="button" class="inputbtn">Tambah</button></a>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <?php if (isset($_SESSION['message'])): ?>
                                 <div class="alert alert-info">

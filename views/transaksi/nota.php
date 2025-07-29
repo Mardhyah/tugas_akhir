@@ -61,8 +61,8 @@ if ($id_transaksi) {
                 }
             } elseif ($transaksi['jenis_transaksi'] == 'tarik_saldo') {
                 $tarik_saldo_query = "SELECT ps.jenis_saldo, ps.jumlah_tarik
-                          FROM tarik_saldo ps
-                          WHERE ps.id_transaksi = ?";
+                        FROM tarik_saldo ps
+                        WHERE ps.id_transaksi = ?";
 
                 if ($tarik_stmt = $koneksi->prepare($tarik_saldo_query)) {
                     $tarik_stmt->bind_param("s", $id_transaksi);

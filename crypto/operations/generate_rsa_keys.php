@@ -20,7 +20,7 @@ $config = [
 $res = openssl_pkey_new($config);
 
 if (!$res) {
-    echo "❌ Gagal membuat kunci RSA.\n";
+    echo " Gagal membuat kunci RSA.\n";
     while ($msg = openssl_error_string()) {
         echo "OpenSSL Error: $msg\n";
     }

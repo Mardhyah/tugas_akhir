@@ -1,6 +1,6 @@
 <?php
 
-require_once 'RSA.php'; // class XRsa
+require_once __DIR__ . '/../core/RSA.php';
 
 use XRsa\XRsa;
 
@@ -13,12 +13,12 @@ if (!$publicKey) {
 // Baca AES key dari file dan decode dari base64
 $aesKeyBase64 = file_get_contents(__DIR__ . '/../data/original_aes.txt');
 if (!$aesKeyBase64) {
-    die("❌ Gagal membaca original_aes.txt");
+    die("Gagal membaca original_aes.txt");
 }
 
 $aesKey = base64_decode($aesKeyBase64);
 if (!$aesKey) {
-    die("❌ Gagal mendecode AES key dari Base64");
+    die(" Gagal mendecode AES key dari Base64");
 }
 
 // Inisialisasi XRsa hanya dengan public key
@@ -31,6 +31,6 @@ if (!$encryptedAES) {
 }
 
 // Simpan hasil enkripsi ke file dalam Base64
-file_put_contents(__DIR__ . '/aes_encrypted_by_rsa.txt', base64_encode($encryptedAES));
+file_put_contents(__DIR__ . '/../data/aes_encrypted_by_rsa.txt', base64_encode($encryptedAES));
 
 echo "✅ AES key berhasil dienkripsi dengan RSA dan disimpan di 'aes_encrypted_by_rsa.txt'\n";
