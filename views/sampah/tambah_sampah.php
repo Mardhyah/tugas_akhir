@@ -169,7 +169,7 @@ if (isset($_POST["submit"])) {
                     <!-- Start of Form Section -->
                     <div class="tabular--wrapper">
                         <h3 class="main--title">Isi Form Berikut</h3>
-                        <form method="POST" action="">
+                        <form method="POST" action="" id="formku" onsubmit="return validateForm()">
                             <div class="container">
 
 
@@ -203,7 +203,7 @@ if (isset($_POST["submit"])) {
 
                                 <label for="kategori">Kategori</label>
 
-                                <select name="kategori">
+                                <select name="kategori" id="kategori">
                                     <option value="">Pilih</option>
                                     <?php foreach ($categories as $category): ?>
                                         <option value="<?= $category['id'] ?>"><?= $category['name'] ?></option>
@@ -291,6 +291,16 @@ if (isset($_POST["submit"])) {
             }
             hitungKeuntungan();
         });
+
+
+        function validateForm() {
+            var kategori = document.getElementById("kategori").value;
+            if (kategori === "") {
+                alert("Silakan pilih kategori terlebih dahulu.");
+                return false; // mencegah form dikirim
+            }
+            return true;
+        }
     </script>
     <script src="script.js"></script>
 </body>

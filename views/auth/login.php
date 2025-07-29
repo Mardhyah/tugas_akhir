@@ -20,7 +20,7 @@ if (isset($_POST['login'])) {
         if (password_verify($password, $data['password'])) {
             // Jika role bukan admin atau superadmin, cek apakah akun sudah diverifikasi
             if (($data['role'] == 'nasabah' || $data['role'] == 'user') && $data['is_verified'] != 1) {
-                echo "<script>alert('Akun Anda belum diverifikasi.'); window.location='login.php';</script>";
+                echo "<script>alert('Akun Anda belum diverifikasi.'); window.location='index.php?page=login';</script>";
                 exit;
             }
 
@@ -32,12 +32,12 @@ if (isset($_POST['login'])) {
             exit;
         } else {
             // Password salah
-            echo "<script>alert('Username atau Password salah'); window.location='login.php';</script>";
+            echo "<script>alert('Username atau Password salah'); window.location='index.php?page=login';</script>";
             exit;
         }
     } else {
         // Username tidak ditemukan
-        echo "<script>alert('Username atau Password salah'); window.location='login.php';</script>";
+        echo "<script>alert('Username atau Password salah'); window.location='index.php?page=login';</script>";
         exit;
     }
 }
