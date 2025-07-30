@@ -203,7 +203,7 @@ function isEncryptedFormat(string $text): bool
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <style>
     #grafik-penyetoran {

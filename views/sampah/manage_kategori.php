@@ -62,7 +62,7 @@ $categories = query("SELECT * FROM kategori_sampah ORDER BY id ASC");
     <!-- My CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <style>
     label {

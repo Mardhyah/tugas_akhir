@@ -88,7 +88,7 @@ $query_all = getAdmin($search_nik);
     <!-- My CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <!-- <style>
     input[name="search_nik"] {

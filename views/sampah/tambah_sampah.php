@@ -35,7 +35,7 @@ if (isset($_POST["submit"])) {
 
     <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap');

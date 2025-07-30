@@ -103,7 +103,7 @@ $deleted_users = mysqli_query($koneksi, $deleted_users_query);
 
     <link rel="stylesheet" href="../../assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <style>
     input[name="search_nama"] {

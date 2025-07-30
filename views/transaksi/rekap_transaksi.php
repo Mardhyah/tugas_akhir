@@ -99,7 +99,7 @@ if (!$transaksi_result) {
 
     <link rel="stylesheet" href="../../assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 
 <style>

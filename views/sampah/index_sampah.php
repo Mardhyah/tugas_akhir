@@ -44,7 +44,7 @@ $query_all = getSampahData();
     <!-- My CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <style>
 

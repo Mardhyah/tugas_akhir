@@ -215,7 +215,7 @@ include_once __DIR__ . '/../layouts/sidebar.php';
     <!-- My CSS -->
     <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <script>
     function validateSearchForm() {
@@ -437,7 +437,7 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                                             <div class="input-group">
                                                 <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
                                                 <input type="number" step="0.01" name="jumlah_uang" id="jumlah_uang"
-                                                    class="form-control" placeholder="Jumlah Uang">
+                                                    class="form-control" placeholder="Jumlah Uang" required autocomplete="off">
                                             </div>
                                             <p id="sisa_saldo_uang" class="text-info"></p>
                                         </div>

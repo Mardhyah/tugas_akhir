@@ -141,7 +141,7 @@ if ($jenis_result->num_rows > 0) {
     <!-- My CSS -->
     <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <script>
     var jenisSampah = <?php echo json_encode($jenis_sampah); ?>;
@@ -336,7 +336,7 @@ if ($jenis_result->num_rows > 0) {
                         <div class="tabular--wrapper">
 
                             <!-- Date and Time Section -->
-                            <form method="POST" action="">
+                            <form method="POST" action="index.php?page=jual_sampah" onsubmit="return validateJualSampah();">
 
                                 <div class="row mb-4">
                                     <div class="col-md-4">
@@ -408,6 +408,28 @@ if ($jenis_result->num_rows > 0) {
 
 
 
+            <script>
+                function validateJualSampah() {
+                    const jenisSampah = document.querySelectorAll('.jenis_sampah');
+                    const jumlahSampah = document.querySelectorAll('.jumlah_sampah');
+
+                    let valid = false;
+
+                    for (let i = 0; i < jenisSampah.length; i++) {
+                        if (jenisSampah[i].value && jumlahSampah[i].value > 0) {
+                            valid = true;
+                            break;
+                        }
+                    }
+
+                    if (!valid) {
+                        alert("Harap isi dan tambah minimal satu jenis sampah terlebih dahulu sebelum menjual.");
+                        return false; // Cegah form terkirim
+                    }
+
+                    return true; // Form akan dikirim
+                }
+            </script>
 
 
         </main>

@@ -197,7 +197,7 @@ if ($jenis_result->num_rows > 0) {
     <!-- My CSS -->
     <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
 
-    <title>AdminHub</title>
+    <title>BankSampah</title>
 </head>
 <style>
     /* Styling for suggestion box */
@@ -526,14 +526,6 @@ if ($jenis_result->num_rows > 0) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- <tr>
-                                    <td><button class="btn btn-danger" onclick="removeRow(this)">&times;</button></td>
-                                    <td>1</td>
-                                    <td>
-                                        <select name="id_kategori[]" id="id_kategori_1" class="form-control"
-                                            onchange="updateJenis(1)">
-                                            <option value="">-- kategoriaaa sampah --</option> -->
-
                                     <?php
                                     if ($kategori_result->num_rows > 0) {
                                         while ($row = $kategori_result->fetch_assoc()) {
@@ -542,23 +534,6 @@ if ($jenis_result->num_rows > 0) {
                                     }
                                     ?>
 
-
-                                    <!-- </select>
-                                    </td>
-                                    <td>
-                                        <select name="id_jenis[]" id="id_jenis_1" class="form-control"
-                                            onchange="updateHarga(1)">
-                                            <option value="">-- jenis sampah --</option>
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="jumlah[]" id="jumlah_1" class="form-control"
-                                            placeholder="Jumlah" oninput="updateHarga(1)">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="harga[]" id="harga_1" class="form-control" readonly>
-                                    </td>
-                                </tr> -->
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -572,17 +547,12 @@ if ($jenis_result->num_rows > 0) {
                                 </tfoot>
                             </table>
                             <button type="button" class="btn btn-dark mb-3" onclick="addRow()">Tambah Baris</button>
-                            <button type="submit" name="submit" class="btn btn-primary mb-3" onclick="setTimeout(() => window.location.reload(), 500);">SUBMIT</button>
+                            <button type="submit" id="submitBtn" name="submit" class="btn btn-primary mb-3">SUBMIT</button>
                         </form>
                     </div>
                     <!-- End of Form Section -->
                 </div>
             </div>
-
-
-
-
-
 
         </main>
         <!-- MAIN -->
@@ -592,6 +562,20 @@ if ($jenis_result->num_rows > 0) {
         if (window.opener) {
             window.opener.location.reload();
         }
+
+
+        document.getElementById('submitBtn').addEventListener('click', function(event) {
+            const userIdInput = document.querySelector('input[name="user_id"]');
+
+            if (!userIdInput || userIdInput.value.trim() === "") {
+                alert("Silakan cari dan pilih NIK nasabah terlebih dahulu sebelum menyetor sampah.");
+                event.preventDefault(); // Mencegah form submit
+                return false;
+            }
+
+            // Jika lolos validasi, boleh reload setelah submit
+            setTimeout(() => window.location.reload(), 500);
+        });
     </script>
 
 

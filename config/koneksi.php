@@ -1,8 +1,8 @@
 <?php
 $db_host = "localhost";
 $db_user = "root";
-$db_pass = "";
-$db_name = "banksampah";
+$db_pass = "p@ssKeiCrypto";
+$db_name = "bank_sampah";
 
 $koneksi = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
 

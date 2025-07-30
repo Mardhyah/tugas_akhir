@@ -46,7 +46,7 @@ def brute_force(ciphertext_b64, known_key, missing_bytes, original_plaintext, ma
     attempts = 0
     total_possibilities = 2 ** (missing_bytes * 8)
 
-    print(f"🚀 Memulai brute force untuk {missing_bytes} byte hilang ({total_possibilities:,} kemungkinan)...")
+    print(f" Memulai brute force untuk {missing_bytes} byte hilang ({total_possibilities:,} kemungkinan)...")
 
     for i in range(total_possibilities):
         attempts += 1
@@ -65,14 +65,14 @@ def brute_force(ciphertext_b64, known_key, missing_bytes, original_plaintext, ma
             elapsed = time.time() - start_time
             print(f"🔍 {attempts:,} dicoba... Waktu: {elapsed:.2f} detik")
             if elapsed > max_time:
-                print("⏰ Waktu habis! Brute force dihentikan.")
+                print(" Waktu habis! Brute force dihentikan.")
                 return None, attempts, elapsed
 
     elapsed = time.time() - start_time
     return None, attempts, elapsed
 
 # =======================
-# 💾 Load Data dari File
+# Load Data dari File
 # =======================
 with open("cipher.txt", "r") as f:
     ciphertext_b64 = f.read().strip()
@@ -84,20 +84,20 @@ with open("plain.txt", "rb") as f:
     original_plaintext = f.read()
 
 # =======================
-# 🔐 Brute Force Simulation
+# Brute Force Simulation
 # =======================
 
 time_limits = {1: 60, 2: 180, 3: 600}  # contoh: 1 byte (1 menit), 2 byte (3 menit), dst.
 
 for missing_bytes in [1, 2, 3]:
-    print(f"\n🔧 Uji brute force dengan {missing_bytes} byte kunci hilang...")
+    print(f"\nUji brute force dengan {missing_bytes} byte kunci hilang...")
     partial_key = full_key[:-missing_bytes]
     max_time = time_limits[missing_bytes]
 
     recovered_key, attempts, elapsed = brute_force(ciphertext_b64, partial_key, missing_bytes, original_plaintext, max_time)
 
     if recovered_key:
-        print(f"✅ Kunci berhasil ditemukan: {recovered_key.hex()}")
-        print(f"📊 Total percobaan: {attempts:,}, Waktu: {elapsed:.2f} detik")
+        print(f"Kunci berhasil ditemukan: {recovered_key.hex()}")
+        print(f"Total percobaan: {attempts:,}, Waktu: {elapsed:.2f} detik")
     else:
-        print(f"❌ Gagal mendapatkan kunci setelah {attempts:,} percobaan (dalam {elapsed:.2f} detik)")
+        print(f"Gagal mendapatkan kunci setelah {attempts:,} percobaan (dalam {elapsed:.2f} detik)")
