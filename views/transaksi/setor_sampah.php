@@ -197,7 +197,7 @@ if ($jenis_result->num_rows > 0) {
     <!-- My CSS -->
     <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
 
-    <title>BankSampah</title>
+    <title>AdminHub</title>
 </head>
 <style>
     /* Styling for suggestion box */

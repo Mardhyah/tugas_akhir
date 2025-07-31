@@ -1,5 +1,5 @@
 <?php
-$koneksi = mysqli_connect("localhost", "root", "p@ssKeiCrypto", "bank_sampah");
+$koneksi = mysqli_connect("localhost", "root", "p@ssKeiCrypto", "banksampah");
 
 function query($query)
 {
