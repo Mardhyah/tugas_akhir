@@ -74,7 +74,7 @@ if ($id_transaksi) {
                         try {
                             $tarik_saldo['jumlah_tarik'] = decryptWithAES($tarik_saldo['jumlah_tarik']);
                         } catch (Exception $e) {
-                            $tarik_saldo['jumlah_tarik'] = '❌ gagal dekripsi';
+                            $tarik_saldo['jumlah_tarik'] = 'gagal dekripsi';
                         }
                     }
                 } else {

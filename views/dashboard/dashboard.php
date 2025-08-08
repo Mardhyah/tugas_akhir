@@ -170,8 +170,17 @@ $queryJual = mysqli_query($koneksi, "SELECT SUM(jumlah_rp) AS total_jual FROM ju
 $dataJual = mysqli_fetch_assoc($queryJual);
 $totalJual = $dataJual['total_jual'] ?? 0;
 
-$notifQuery = mysqli_query($koneksi, "SELECT COUNT(*) as jumlah FROM user WHERE role = 'nasabah' AND is_verified = 0 AND status = 1");
+
+$notifQuery = mysqli_query($koneksi, "
+    SELECT COUNT(*) AS jumlah 
+    FROM user 
+    WHERE role = 'nasabah' 
+        AND is_verified = 0 
+        AND verify_status = 'verified' 
+        AND status = 1
+");
 $notif = mysqli_fetch_assoc($notifQuery);
+
 // Close the statement
 $stmt->close();
 

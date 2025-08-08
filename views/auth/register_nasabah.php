@@ -1,9 +1,69 @@
 <?php
+// Import PHPMailer classes
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+// Load Composer's autoloader
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+
 include_once __DIR__ . '/../layouts/header.php';
 include_once __DIR__ . '/../../config/koneksi.php';
+
+function sendmail_verify($email, $verify_token)
+{
+    require __DIR__ . '/../../vendor/autoload.php';
+    // Create instance
+    $mail = new PHPMailer(true);
+
+    // Server settings
+    // $mail->SMTPDebug  = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
+    $mail->isSMTP();                                             // Send using SMTP
+    $mail->Host       = 'smtp.gmail.com';                        // SMTP server
+    $mail->SMTPAuth   = true;                                    // Enable SMTP authentication
+    $mail->Username   = 'banksampah747@gmail.com';               // Your Gmail
+    $mail->Password   = 'tyyhcrkpcojftwuh';                      // App password (bukan password biasa)
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;          // Encryption type
+    $mail->Port       = 587;                                     // Port
+
+    // Recipients
+    $mail->setFrom('from@example.com', 'Bank Sampah');
+    $mail->addAddress($email, $username); // Kirim ke email user yang diinput
+    $mail->addReplyTo('no-reply@example.com', 'Information');
+
+    // Content
+    $mail->isHTML(true); // Set email format to HTML
+
+    $email_template = "
+    <div style='font-family: Arial, sans-serif; color: #333;'>
+        <h2 style='color: #2e7d32;'>Selamat Datang di Bank Sampah!</h2>
+        <p>Halo,</p>
+        <p>Terima kasih telah melakukan pendaftaran akun di <strong>Bank Sampah</strong>.</p>
+        <p>Untuk mengaktifkan akunmu dan mulai menggunakan layanan kami, silakan verifikasi email dengan mengklik tombol di bawah ini:</p>
+        <p style='margin: 20px 0;'>
+            <a href='http://localhost/bank_sampah/views/auth/verify_email.php?token=$verify_token'
+               style='background-color: #2e7d32; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;'>
+                Verifikasi Email Sekarang
+            </a>
+        </p>
+      
+        <p>Salam hangat,</p>
+        <p><strong>Tim Bank Sampah</strong></p>
+    </div>
+";
+
+
+    $mail->Subject = 'Verifikasi email';
+    $mail->Body    = $email_template;
+    $mail->AltBody = 'Silakan verifikasi emailmu untuk dapat login.';
+
+    $mail->send();
+    echo 'Email terkirim';
+}
 
 // Ambil data role dari session jika pengguna login
 $loggedInRole = isset($_SESSION['role']) ? $_SESSION['role'] : null;
@@ -64,6 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $kelamin = trim($_POST['kelamin']);
     $role = isset($_POST['role']) ? $_POST['role'] : 'nasabah';
     $status = 1; // Pastikan akun baru memiliki status 1
+    $verify_status = 'pending'; // default saat pertama daftar
 
     // Jika pengguna tidak login, role otomatis adalah 'nasabah'
     if (!isset($loggedInRole)) {
@@ -91,18 +152,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $err = "Username sudah digunakan. Silakan pilih username lain.";
         } else {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $verify_token = md5(uniqid($username, true));
+            $verify_status = 'pending';
+
 
             // Masukkan data ke database
-            $insert_query = "INSERT INTO user (username, password, nama, role, email, notelp, nik, alamat, tgl_lahir, kelamin, no_rek, status, gol, bidang, nip, is_verified) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $insert_query = "INSERT INTO user (username, password, nama, role, email, notelp, nik, alamat, tgl_lahir, kelamin, no_rek, status, gol, bidang, nip, is_verified, verify_status, verify_token) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
             $is_verified = 0; // Tambahkan ini sebelum bind_param
 
             $insert_stmt = mysqli_prepare($koneksi, $insert_query);
-            mysqli_stmt_bind_param($insert_stmt, "ssssssssssssssii", $username, $hashed_password, $nama, $role, $email, $notelp, $nik, $alamat, $tgl_lahir, $kelamin, $new_no_rek, $status, $gol, $bidang, $nip, $is_verified);
+            mysqli_stmt_bind_param(
+                $insert_stmt,
+                "ssssssssssssssisss",
+                $username,
+                $hashed_password,
+                $nama,
+                $role,
+                $email,
+                $notelp,
+                $nik,
+                $alamat,
+                $tgl_lahir,
+                $kelamin,
+                $new_no_rek,
+                $status,
+                $gol,
+                $bidang,
+                $nip,
+                $is_verified,
+                $verify_status,
+                $verify_token
+            );
 
             if (mysqli_stmt_execute($insert_stmt)) {
+                sendmail_verify($email, $verify_token); // Kirim email di sini
+
                 $_SESSION['message'] = "register berhasil";
                 header("location: index.php?page=register_nasabah");
                 exit;
@@ -126,241 +213,259 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Register Nasabah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
 
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            height: 100%;
+
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        height: 100%;
+        overflow-y: auto;
+        background-color: #f2f2f2;
+    }
+
+    /* container-regis UTAMA */
+    .container-regis {
+        display: flex;
+        min-height: 100vh;
+        width: 100%;
+    }
+
+    /* FORM SECTION */
+    .signin-section {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 40px;
+        position: relative;
+        background-color: #ffffff;
+    }
+
+    .signin-section h2 {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* FORM WRAPPER */
+    .form-container-regis {
+        width: 100%;
+        max-width: 600px;
+        overflow-y: auto;
+        max-height: calc(100vh - 140px);
+        padding-right: 10px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* FORM */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: #f9f9f9;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .inputbtn {
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-cancel {
+        background-color: #ccc;
+        color: black;
+    }
+
+    .btn-cancel:hover {
+        background-color: #aaa;
+    }
+
+    .inputbtn[type="submit"],
+    .inputbtn:not(.btn-cancel) {
+        background-color: #25745A;
+        color: white;
+    }
+
+    .inputbtn[type="submit"]:hover,
+    .inputbtn:not(.btn-cancel):hover {
+        background-color: #1e5e49;
+    }
+
+    /* INFO SECTION */
+    .info-section {
+        flex: 1;
+        background: #25745A;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 60px 40px;
+        text-align: center;
+    }
+
+    .info-section h2 {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .info-section p {
+        max-width: 500px;
+        font-size: 20px;
+        line-height: 1.6;
+    }
+
+    /* Responsif Mobile */
+    /* Responsif Mobile dan Tablet */
+    @media (max-width: 900px) {
+
+        html,
+        body {
+            height: auto;
             overflow-y: auto;
-            background-color: #f2f2f2;
         }
 
-        /* CONTAINER UTAMA */
-        .container {
-            display: flex;
-            min-height: 100vh;
-            width: 100%;
-        }
-
-        /* FORM SECTION */
-        .signin-section {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .container-regis {
             flex-direction: column;
-            padding: 40px;
-            position: relative;
-            background-color: #ffffff;
-        }
-
-        .signin-section h2 {
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-align: center;
-            width: 100%;
-        }
-
-        /* FORM WRAPPER */
-        .form-container {
-            width: 100%;
-            max-width: 600px;
+            height: auto;
             overflow-y: auto;
-            max-height: calc(100vh - 140px);
-            padding-right: 10px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
-        /* FORM */
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .form-field {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        input,
-        select,
-        textarea {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: #f9f9f9;
-        }
-
-        textarea {
-            resize: vertical;
-        }
-
-        .form-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .inputbtn {
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-cancel {
-            background-color: #ccc;
-            color: black;
-        }
-
-        .btn-cancel:hover {
-            background-color: #aaa;
-        }
-
-        .inputbtn[type="submit"],
-        .inputbtn:not(.btn-cancel) {
-            background-color: #25745A;
-            color: white;
-        }
-
-        .inputbtn[type="submit"]:hover,
-        .inputbtn:not(.btn-cancel):hover {
-            background-color: #1e5e49;
-        }
-
-        /* INFO SECTION */
+        .signin-section,
         .info-section {
-            flex: 1;
-            background: #25745A;
-            color: white;
-            display: flex;
-            justify-content: center;
+            width: 100%;
+            min-height: auto;
+            padding: 30px 20px;
             align-items: center;
-            flex-direction: column;
-            padding: 60px 40px;
-            text-align: center;
+            justify-content: center;
+        }
+
+        .info-section {
+            order: -1;
+            /* Pindahkan info-section ke atas di mobile */
+            padding: 40px 20px;
         }
 
         .info-section h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
+            font-size: 28px;
         }
 
         .info-section p {
-            max-width: 500px;
-            font-size: 20px;
-            line-height: 1.6;
+            font-size: 16px;
         }
 
-        /* Responsif Mobile */
-        /* Responsif Mobile dan Tablet */
-        @media (max-width: 900px) {
-
-            html,
-            body {
-                height: auto;
-                overflow-y: auto;
-            }
-
-            .container {
-                flex-direction: column;
-                height: auto;
-                overflow-y: auto;
-            }
-
-            .signin-section,
-            .info-section {
-                width: 100%;
-                min-height: auto;
-                padding: 30px 20px;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .info-section {
-                order: -1;
-                /* Pindahkan info-section ke atas di mobile */
-                padding: 40px 20px;
-            }
-
-            .info-section h2 {
-                font-size: 28px;
-            }
-
-            .info-section p {
-                font-size: 16px;
-            }
-
-            .signin-section h2 {
-                font-size: 28px;
-            }
-
-            .form-container {
-                max-height: none;
-                overflow-y: visible;
-                padding-right: 0;
-            }
-
-            .inputbtn,
-            .btn-signup {
-                width: 100%;
-                text-align: center;
-            }
-
-            .form-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
+        .signin-section h2 {
+            font-size: 28px;
         }
 
+        .form-container-regis {
+            max-height: none;
+            overflow-y: visible;
+            padding-right: 0;
+        }
 
+        .inputbtn,
         .btn-signup {
-            margin-top: 40px;
-            padding: 14px 28px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            border-radius: 35px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
         }
 
-        .btn-signup:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
         }
-    </style>
-</head>
+    }
+
+
+    .btn-signup {
+        margin-top: 40px;
+        padding: 14px 28px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 35px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-signup:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+</style>
 
 <body>
-    <div class="container">
+    <div class="container-regis">
         <div class="signin-section">
 
             <h2>Form Pendaftaran Nasabah</h2>
-            <div class="form-container">
+            <div class="form-container-regis">
+
+
+                <?php if (isset($_SESSION['message'])): ?>
+                    <div class="alert alert-<?php echo ($_SESSION['message'] === 'register berhasil') ? 'success' : 'danger'; ?> alert-dismissible fade show" role="alert">
+                        <?php if ($_SESSION['message'] === 'register berhasil'): ?>
+                            Pendaftaran berhasil! Silakan cek email untuk verifikasi.
+                        <?php else: ?>
+                            <?php echo $_SESSION['message']; ?>
+                        <?php endif; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['message']); ?>
+                <?php endif; ?>
+
 
                 <form method="POST" action="" class="form-scrollable">
 
@@ -463,33 +568,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         window.addEventListener('DOMContentLoaded', toggleGolongan);
     </script>
 
-    <script>
-        const form = document.getElementById('myForm');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Simulasi validasi
-            const isValid = true;
-
-            if (isValid) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Form berhasil dikirim.',
-                    confirmButtonColor: '#25745A'
-                });
-                form.reset();
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Form gagal dikirim. Coba periksa kembali isian.',
-                    confirmButtonColor: '#d33'
-                });
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

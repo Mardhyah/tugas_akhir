@@ -6,7 +6,7 @@ include_once __DIR__ . '/../layouts/sidebar.php';
 include_once __DIR__ . '/..//../config/koneksi.php';
 
 // Ambil data nasabah yang belum diverifikasi
-$query = mysqli_query($koneksi, "SELECT * FROM user WHERE role = 'nasabah' AND is_verified = 0 AND status = 1");
+$query = mysqli_query($koneksi, "SELECT * FROM user WHERE role = 'nasabah' AND is_verified = 0 AND verify_status = 'verified' AND status = 1");
 
 // Cek jika ada parameter aksi dan id di URL
 if (isset($_GET['id']) && isset($_GET['aksi'])) {

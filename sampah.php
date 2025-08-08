@@ -169,3 +169,228 @@ $query_all = getSampahData();
 </html>
 
 ini sampah.php
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        height: 100%;
+        overflow-y: auto;
+        background-color: #f2f2f2;
+    }
+
+    /* CONTAINER UTAMA */
+    .container {
+        display: flex;
+        min-height: 100vh;
+        width: 100%;
+    }
+
+    /* FORM SECTION */
+    .signin-section {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 40px;
+        position: relative;
+        background-color: #ffffff;
+    }
+
+    .signin-section h2 {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* FORM WRAPPER */
+    .form-container {
+        width: 100%;
+        max-width: 600px;
+        overflow-y: auto;
+        max-height: calc(100vh - 140px);
+        padding-right: 10px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    /* FORM */
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        background-color: #f9f9f9;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .inputbtn {
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-cancel {
+        background-color: #ccc;
+        color: black;
+    }
+
+    .btn-cancel:hover {
+        background-color: #aaa;
+    }
+
+    .inputbtn[type="submit"],
+    .inputbtn:not(.btn-cancel) {
+        background-color: #25745A;
+        color: white;
+    }
+
+    .inputbtn[type="submit"]:hover,
+    .inputbtn:not(.btn-cancel):hover {
+        background-color: #1e5e49;
+    }
+
+    /* INFO SECTION */
+    .info-section {
+        flex: 1;
+        background: #25745A;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 60px 40px;
+        text-align: center;
+    }
+
+    .info-section h2 {
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .info-section p {
+        max-width: 500px;
+        font-size: 20px;
+        line-height: 1.6;
+    }
+
+    /* Responsif Mobile */
+    /* Responsif Mobile dan Tablet */
+    @media (max-width: 900px) {
+
+        html,
+        body {
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .container {
+            flex-direction: column;
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .signin-section,
+        .info-section {
+            width: 100%;
+            min-height: auto;
+            padding: 30px 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-section {
+            order: -1;
+            /* Pindahkan info-section ke atas di mobile */
+            padding: 40px 20px;
+        }
+
+        .info-section h2 {
+            font-size: 28px;
+        }
+
+        .info-section p {
+            font-size: 16px;
+        }
+
+        .signin-section h2 {
+            font-size: 28px;
+        }
+
+        .form-container {
+            max-height: none;
+            overflow-y: visible;
+            padding-right: 0;
+        }
+
+        .inputbtn,
+        .btn-signup {
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+
+
+    .btn-signup {
+        margin-top: 40px;
+        padding: 14px 28px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 35px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-signup:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+</style>

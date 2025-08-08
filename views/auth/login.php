@@ -18,9 +18,16 @@ if (isset($_POST['login'])) {
     if ($data) {
         // Verifikasi password terlebih dahulu
         if (password_verify($password, $data['password'])) {
-            // Jika role bukan admin atau superadmin, cek apakah akun sudah diverifikasi
-            if (($data['role'] == 'nasabah' || $data['role'] == 'user') && $data['is_verified'] != 1) {
-                echo "<script>alert('Akun Anda belum diverifikasi.'); window.location='index.php?page=login';</script>";
+
+            // Cek apakah role nasabah sudah verifikasi email
+            if ($data['role'] == 'nasabah' && $data['verify_status'] != 'verified') {
+                echo "<script>alert('Email Anda belum diverifikasi. Silakan cek email Anda untuk verifikasi.'); window.location='index.php?page=login';</script>";
+                exit;
+            }
+
+            // Cek verifikasi admin untuk nasabah
+            if ($data['role'] == 'nasabah' && $data['is_verified'] != 1) {
+                echo "<script>alert('Silakan tunggu verifikasi dari admin.'); window.location='index.php?page=login';</script>";
                 exit;
             }
 

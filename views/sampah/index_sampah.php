@@ -109,8 +109,8 @@ $query_all = getSampahData();
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>Kategori</th>
                                         <th>Jenis</th>
+                                        <th>Kategori</th>
                                         <th>Harga Nasabah</th>
                                         <th>Harga Pengepul</th>
                                         <th>Jumlah (KG)</th>
@@ -122,8 +122,9 @@ $query_all = getSampahData();
                                     <?php foreach ($query_all as $row): ?>
                                         <tr>
                                             <td><?= $row["id"]; ?></td>
-                                            <td><?= $row["kategori_name"]; ?></td>
                                             <td><?= $row["jenis"]; ?></td>
+                                            <td><?= $row["kategori_name"]; ?></td>
+
                                             <td>Rp. <?= number_format($row["harga"], 0, ',', '.'); ?></td>
                                             <td>Rp. <?= number_format($row["harga_pusat"], 0, ',', '.'); ?></td>
                                             <td><?= $row["jumlah"]; ?> KG</td>

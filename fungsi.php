@@ -276,7 +276,6 @@ function handleAddWaste($postData)
     }
 }
 
-//sampah.php
 function getSampahData()
 {
     return query("
@@ -289,7 +288,7 @@ function getSampahData()
             sampah.jumlah 
         FROM sampah 
         JOIN kategori_sampah ON sampah.id_kategori = kategori_sampah.id 
-        ORDER BY LENGTH(sampah.id), CAST(sampah.id AS UNSIGNED)
+        ORDER BY kategori_name ASC, LENGTH(sampah.id), CAST(sampah.id AS UNSIGNED)
     ");
 }
 
