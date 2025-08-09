@@ -190,7 +190,7 @@ $data = getUserData($koneksi, $username);
         <main>
             <div class="head-title">
                 <div class="left">
-                    <span>Halaman</span>
+                    <span>Halamanm</span>
                     <h1>Detail User</h1>
                 </div>
             </div>
