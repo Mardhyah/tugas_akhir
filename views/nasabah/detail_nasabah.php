@@ -130,8 +130,9 @@ if (!$row) {
                             </tr>
                             <tr>
                                 <th>Frekuensi Menabung</th>
-                                <td><?= htmlspecialchars($row['frekuensi_menabung']); ?></td>
+                                <td><?= htmlspecialchars($row['frekuensi_menabung']) ?> kali</td>
                             </tr>
+
                             <tr>
                                 <th>Terakhir Menabung</th>
                                 <td><?= htmlspecialchars($row['terakhir_menabung']); ?></td>

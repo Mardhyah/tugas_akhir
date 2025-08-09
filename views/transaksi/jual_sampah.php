@@ -141,7 +141,7 @@ if ($jenis_result->num_rows > 0) {
     <!-- My CSS -->
     <link rel="stylesheet" href="/bank_sampah/assets/css/style.css">
 
-    <title>BankSampah</title>
+    <title>AdminHub</title>
 </head>
 <script>
     var jenisSampah = <?php echo json_encode($jenis_sampah); ?>;
@@ -336,7 +336,7 @@ if ($jenis_result->num_rows > 0) {
                         <div class="tabular--wrapper">
 
                             <!-- Date and Time Section -->
-                            <form method="POST" action="index.php?page=jual_sampah" onsubmit="return validateJualSampah();">
+                            <form method="POST" action="">
 
                                 <div class="row mb-4">
                                     <div class="col-md-4">
@@ -408,28 +408,6 @@ if ($jenis_result->num_rows > 0) {
 
 
 
-            <script>
-                function validateJualSampah() {
-                    const jenisSampah = document.querySelectorAll('.jenis_sampah');
-                    const jumlahSampah = document.querySelectorAll('.jumlah_sampah');
-
-                    let valid = false;
-
-                    for (let i = 0; i < jenisSampah.length; i++) {
-                        if (jenisSampah[i].value && jumlahSampah[i].value > 0) {
-                            valid = true;
-                            break;
-                        }
-                    }
-
-                    if (!valid) {
-                        alert("Harap isi dan tambah minimal satu jenis sampah terlebih dahulu sebelum menjual.");
-                        return false; // Cegah form terkirim
-                    }
-
-                    return true; // Form akan dikirim
-                }
-            </script>
 
 
         </main>
@@ -437,6 +415,28 @@ if ($jenis_result->num_rows > 0) {
     </section>
     <!-- CONTENT -->
 
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            var rows = document.querySelectorAll('#transaksiTable tbody tr');
+            var filled = false;
+
+            rows.forEach(function(row) {
+                var kategori = row.querySelector('select[name="id_kategori[]"]').value;
+                var jenis = row.querySelector('select[name="id_jenis[]"]').value;
+                var jumlah = row.querySelector('input[name="jumlah[]"]').value;
+
+                // Cek kalau semua kolom wajib di baris itu sudah terisi
+                if (kategori !== '' && jenis !== '' && jumlah !== '') {
+                    filled = true;
+                }
+            });
+
+            if (!filled) {
+                alert('Silakan isi minimal 1 baris data sebelum submit!');
+                e.preventDefault(); // Batalkan submit
+            }
+        });
+    </script>
 
     <script src="script.js"></script>
 </body>

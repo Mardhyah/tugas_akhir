@@ -1,5 +1,5 @@
 <?php
-$koneksi = mysqli_connect("localhost", "root", "p@ssKeiCrypto", "banksampah");
+$koneksi = mysqli_connect("localhost", "root", "p@ssKeiCrypto", "banksampah1");
 
 function query($query)
 {
@@ -97,15 +97,16 @@ function hapususerById($id)
     return hapususer($id);
 }
 
-//admin.php
+// admin.php
 function getAdmin($search_nik = null)
 {
     if ($search_nik) {
-        return query("SELECT * FROM user WHERE role in ('admin','superadmin') AND nik LIKE '%$search_nik%' ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
+        return query("SELECT * FROM user WHERE role = 'admin' AND nik LIKE '%$search_nik%' ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
     } else {
-        return query("SELECT * FROM user WHERE role in ('admin','superadmin') ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
+        return query("SELECT * FROM user WHERE role = 'admin' ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
     }
 }
+
 
 //nasabah.php (cari nik dan hapus nasabah)
 function getNasabah($search_nik = null)

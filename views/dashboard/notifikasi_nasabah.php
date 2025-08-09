@@ -3,7 +3,8 @@ $current_page = $_GET['page'] ?? '';
 
 include_once __DIR__ . '/../layouts/header.php';
 include_once __DIR__ . '/../layouts/sidebar.php';
-include_once __DIR__ . '/..//../config/koneksi.php';
+include_once __DIR__ . '/../../config/koneksi.php';
+include_once __DIR__ . '/send_verified_success.php';
 
 // Ambil data nasabah yang belum diverifikasi
 $query = mysqli_query($koneksi, "SELECT * FROM user WHERE role = 'nasabah' AND is_verified = 0 AND verify_status = 'verified' AND status = 1");
@@ -13,24 +14,37 @@ if (isset($_GET['id']) && isset($_GET['aksi'])) {
     $id = intval($_GET['id']);
     $aksi = $_GET['aksi'];
 
+    // Ambil email user
+    $res_email = mysqli_query($koneksi, "SELECT email FROM user WHERE id = $id");
+    $user_data = mysqli_fetch_assoc($res_email);
+    $email = $user_data['email'] ?? null;
+
     if ($aksi === 'acc') {
-        $query = "UPDATE user SET is_verified = 1 WHERE id = $id";
+        $sql = "UPDATE user SET is_verified = 1 WHERE id = $id";
     } elseif ($aksi === 'tolak') {
-        $query = "DELETE FROM user WHERE id = $id";
+        $sql = "DELETE FROM user WHERE id = $id";
     } else {
         echo "<script>alert('Aksi tidak valid.'); window.location='index.php?page=notifikasi_nasabah';</script>";
         exit;
     }
 
-    if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Aksi berhasil.'); window.location='index.php?page=notifikasi_nasabah';</script>";
+    if (mysqli_query($koneksi, $sql)) {
+        if ($aksi === 'acc' && $email) {
+            if (sendmail_verified_success($email)) {
+                echo "<script>alert('Akun berhasil diverifikasi dan email terkirim ke $email'); window.location='index.php?page=notifikasi_nasabah';</script>";
+            } else {
+                echo "<script>alert('Akun berhasil diverifikasi, tapi email gagal dikirim.'); window.location='index.php?page=notifikasi_nasabah';</script>";
+            }
+        } else {
+            echo "<script>alert('Aksi berhasil dijalankan.'); window.location='index.php?page=notifikasi_nasabah';</script>";
+        }
     } else {
         echo "<script>alert('Terjadi kesalahan.'); window.location='index.php?page=notifikasi_nasabah';</script>";
     }
     exit;
 }
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -97,7 +111,7 @@ if (isset($_GET['id']) && isset($_GET['aksi'])) {
                                                 <th>NIK</th>
                                                 <th>Alamat</th>
                                                 <th>Tanggal Lahir</th>
-                                                <th>No Telepon</th>
+                                                <th>Email</th>
                                                 <th>Bidang</th>
                                                 <th>Aksi</th>
                                             </tr>
@@ -111,7 +125,7 @@ if (isset($_GET['id']) && isset($_GET['aksi'])) {
                                                     <td><?= htmlspecialchars($row['nik']); ?></td>
                                                     <td><?= htmlspecialchars($row['alamat']); ?></td>
                                                     <td><?= htmlspecialchars($row['tgl_lahir']); ?></td>
-                                                    <td><?= htmlspecialchars($row['notelp']); ?></td>
+                                                    <td><?= htmlspecialchars($row['email']); ?>
                                                     <td><?= htmlspecialchars($row['bidang']); ?></td>
                                                     <td>
                                                         <a href="index.php?page=notifikasi_nasabah&id=<?= $row['id']; ?>&aksi=acc" class="btn-acc">Verifikasi</a>

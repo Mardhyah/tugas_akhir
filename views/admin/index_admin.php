@@ -38,15 +38,16 @@ function hapususerById($id)
     return hapususer($id);
 }
 
-//admin.php
+// admin.php
 function getAdmin($search_nik = null)
 {
     if ($search_nik) {
-        return query("SELECT * FROM user WHERE role in ('admin','superadmin') AND nik LIKE '%$search_nik%' ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
+        return query("SELECT * FROM user WHERE role = 'admin' AND nik LIKE '%$search_nik%' ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
     } else {
-        return query("SELECT * FROM user WHERE role in ('admin','superadmin') ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
+        return query("SELECT * FROM user WHERE role = 'admin' ORDER BY LENGTH(id), CAST(id AS UNSIGNED)");
     }
 }
+
 
 // Logika untuk menghapus admin jika ada parameter id pada URL
 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {

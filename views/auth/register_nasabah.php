@@ -1,78 +1,70 @@
 <?php
-// Import PHPMailer classes
+
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Load Composer's autoloader
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-
-include_once __DIR__ . '/../layouts/header.php';
-include_once __DIR__ . '/../../config/koneksi.php';
-
-function sendmail_verify($email, $verify_token)
+function sendmail_verify($email, $verify_token, $username)
 {
     require __DIR__ . '/../../vendor/autoload.php';
-    // Create instance
+
     $mail = new PHPMailer(true);
 
-    // Server settings
-    // $mail->SMTPDebug  = SMTP::DEBUG_SERVER;                      // Enable verbose debug output
-    $mail->isSMTP();                                             // Send using SMTP
-    $mail->Host       = 'smtp.gmail.com';                        // SMTP server
-    $mail->SMTPAuth   = true;                                    // Enable SMTP authentication
-    $mail->Username   = 'banksampah747@gmail.com';               // Your Gmail
-    $mail->Password   = 'tyyhcrkpcojftwuh';                      // App password (bukan password biasa)
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;          // Encryption type
-    $mail->Port       = 587;                                     // Port
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'banksampah747@gmail.com'; // Email pengirim
+        $mail->Password   = 'tyyhcrkpcojftwuh'; // App Password Gmail
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
 
-    // Recipients
-    $mail->setFrom('from@example.com', 'Bank Sampah');
-    $mail->addAddress($email, $username); // Kirim ke email user yang diinput
-    $mail->addReplyTo('no-reply@example.com', 'Information');
+        // Recipients
+        $mail->setFrom('banksampah747@gmail.com', 'Bank Sampah');
+        $mail->addAddress($email, $username);
+        $mail->addReplyTo('no-reply@banksampah.com', 'Information');
 
-    // Content
-    $mail->isHTML(true); // Set email format to HTML
+        // Email Content
+        $mail->isHTML(true);
 
-    $email_template = "
-    <div style='font-family: Arial, sans-serif; color: #333;'>
-        <h2 style='color: #2e7d32;'>Selamat Datang di Bank Sampah!</h2>
-        <p>Halo,</p>
-        <p>Terima kasih telah melakukan pendaftaran akun di <strong>Bank Sampah</strong>.</p>
-        <p>Untuk mengaktifkan akunmu dan mulai menggunakan layanan kami, silakan verifikasi email dengan mengklik tombol di bawah ini:</p>
-        <p style='margin: 20px 0;'>
-            <a href='http://localhost/bank_sampah/views/auth/verify_email.php?token=$verify_token'
-               style='background-color: #2e7d32; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;'>
-                Verifikasi Email Sekarang
-            </a>
-        </p>
-      
-        <p>Salam hangat,</p>
-        <p><strong>Tim Bank Sampah</strong></p>
-    </div>
-";
+        $verification_link = "http://localhost/bank_sampah/views/auth/verify_email.php?token=$verify_token";
 
+        $email_template = "
+        <div style='font-family: Arial, sans-serif; color: #333;'>
+            <h2 style='color: #2e7d32;'>Selamat Datang di Bank Sampah!</h2>
+            <p>Halo <b>$username</b>,</p>
+            <p>Terima kasih telah melakukan pendaftaran akun di <strong>Bank Sampah</strong>.</p>
+            <p>Untuk mengaktifkan akunmu, silakan verifikasi email dengan mengklik tombol di bawah ini:</p>
+            <p style='margin: 20px 0;'>
+                <a href='$verification_link'
+                   style='background-color: #2e7d32; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;'>
+                    Verifikasi Email Sekarang
+                </a>
+            </p>
+            <p>Salam hangat,<br><strong>Tim Bank Sampah</strong></p>
+        </div>
+        ";
 
-    $mail->Subject = 'Verifikasi email';
-    $mail->Body    = $email_template;
-    $mail->AltBody = 'Silakan verifikasi emailmu untuk dapat login.';
+        $mail->Subject = 'Verifikasi Email Akun Bank Sampah';
+        $mail->Body    = $email_template;
+        $mail->AltBody = "Halo $username, silakan verifikasi emailmu melalui link ini: $verification_link";
 
-    $mail->send();
-    echo 'Email terkirim';
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Email tidak terkirim: {$mail->ErrorInfo}");
+        return false;
+    }
 }
+
+
 
 // Ambil data role dari session jika pengguna login
 $loggedInRole = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 
 // Tentukan pilihan role yang bisa diakses
 $roles = [];
-if ($loggedInRole === 'superadmin') {
-    $roles = ['superadmin', 'admin', 'nasabah'];
-} elseif ($loggedInRole === 'admin') {
+if ($loggedInRole === 'admin') {
     $roles = ['admin', 'nasabah'];
 } else {
     $roles = ['nasabah'];
@@ -188,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
 
             if (mysqli_stmt_execute($insert_stmt)) {
-                sendmail_verify($email, $verify_token); // Kirim email di sini
+                sendmail_verify($email, $verify_token, $username);
 
                 $_SESSION['message'] = "register berhasil";
                 header("location: index.php?page=register_nasabah");

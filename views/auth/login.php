@@ -5,29 +5,54 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include_once __DIR__ . '/../../config/koneksi.php';
 
+function validate_recaptcha($recaptcha_response)
+{
+    $secret = '6LdyAJ8rAAAAANpA6LHlBYYZUm9m_A6JKeM8q5jH';
 
+    $ch = curl_init('https://www.google.com/recaptcha/api/siteverify');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+        'secret' => $secret,
+        'response' => $recaptcha_response,
+    ]));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $result = json_decode($response);
+    return $result->success ?? false;
+}
 
 if (isset($_POST['login'])) {
+    // Validasi reCAPTCHA
+    if (!isset($_POST['g-recaptcha-response']) || !validate_recaptcha($_POST['g-recaptcha-response'])) {
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Validasi reCAPTCHA gagal. Silakan coba lagi.'];
+        header("Location: index.php?page=login");
+        exit;
+    }
+
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     // Ambil data user berdasarkan username
+    $username = mysqli_real_escape_string($koneksi, $username);
     $query = mysqli_query($koneksi, "SELECT * FROM user WHERE username='$username'");
     $data = mysqli_fetch_assoc($query);
 
     if ($data) {
-        // Verifikasi password terlebih dahulu
         if (password_verify($password, $data['password'])) {
 
             // Cek apakah role nasabah sudah verifikasi email
             if ($data['role'] == 'nasabah' && $data['verify_status'] != 'verified') {
-                echo "<script>alert('Email Anda belum diverifikasi. Silakan cek email Anda untuk verifikasi.'); window.location='index.php?page=login';</script>";
+                $_SESSION['alert'] = ['type' => 'warning', 'message' => 'Email Anda belum diverifikasi. Silakan cek email Anda untuk verifikasi.'];
+                header("Location: index.php?page=login");
                 exit;
             }
 
             // Cek verifikasi admin untuk nasabah
             if ($data['role'] == 'nasabah' && $data['is_verified'] != 1) {
-                echo "<script>alert('Silakan tunggu verifikasi dari admin.'); window.location='index.php?page=login';</script>";
+                $_SESSION['alert'] = ['type' => 'warning', 'message' => 'Silakan tunggu verifikasi dari admin.'];
+                header("Location: index.php?page=login");
                 exit;
             }
 
@@ -38,19 +63,17 @@ if (isset($_POST['login'])) {
             header("Location: index.php?page=dashboard");
             exit;
         } else {
-            // Password salah
-            echo "<script>alert('Username atau Password salah'); window.location='index.php?page=login';</script>";
+            $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Username atau Password salah.'];
+            header("Location: index.php?page=login");
             exit;
         }
     } else {
-        // Username tidak ditemukan
-        echo "<script>alert('Username atau Password salah'); window.location='index.php?page=login';</script>";
+        $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Username atau Password salah.'];
+        header("Location: index.php?page=login");
         exit;
     }
 }
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -59,7 +82,11 @@ if (isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signin</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -73,7 +100,7 @@ if (isset($_POST['login'])) {
             height: 100vh;
         }
 
-        .container {
+        .container-login-login {
             display: flex;
             height: 100vh;
         }
@@ -113,24 +140,11 @@ if (isset($_POST['login'])) {
             max-width: 600px;
             padding: 20px;
             background-color: #25745A;
-            ;
             border: none;
             color: white;
             font-size: 20px;
             cursor: pointer;
             border-radius: 10px;
-        }
-
-        .social-login {
-            margin-top: 40px;
-            text-align: center;
-        }
-
-        .social-login i {
-            font-size: 30px;
-            margin: 0 18px;
-            cursor: pointer;
-            color: #444;
         }
 
         .welcome-section {
@@ -167,13 +181,20 @@ if (isset($_POST['login'])) {
             cursor: pointer;
         }
     </style>
-
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-login-login">
         <div class="signin-section">
-            <h2>Signin</h2>
+            <h2>Login</h2>
+
+            <?php if (isset($_SESSION['alert'])): ?>
+                <div class="alert alert-<?= $_SESSION['alert']['type']; ?> w-100 text-center" style="max-width:600px;">
+                    <?= $_SESSION['alert']['message']; ?>
+                </div>
+                <?php unset($_SESSION['alert']); ?>
+            <?php endif; ?>
+
             <form method="POST" action="">
                 <div class="form-group">
                     <input type="text" name="username" placeholder="Username" required>
@@ -181,14 +202,16 @@ if (isset($_POST['login'])) {
                 <div class="form-group">
                     <input type="password" name="password" placeholder="Password" required>
                 </div>
+                <div class="g-recaptcha" data-sitekey="6LdyAJ8rAAAAAAtPhceRHCvcwmYEh-foci8tYnL_"></div>
+                <br>
                 <button type="submit" name="login" class="btn-login">Login</button>
             </form>
 
         </div>
+
         <div class="welcome-section">
             <h2>Bank Sampah</h2>
             <p>Mulai perubahan dari diri sendiri. <br>Pilah sampah, selamatkan bumi, dan raih nilai. <br><strong>Memilah Sampah, Menabung Emas.</strong></p>
-
             <button class="btn-signup" onclick="window.location='index.php?page=register_nasabah'">Register Nasabah</button>
         </div>
     </div>

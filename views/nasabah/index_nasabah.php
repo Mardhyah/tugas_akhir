@@ -327,7 +327,7 @@ untuk
                                             <option value="10" <?php if ($limit == 10) echo 'selected'; ?>>10</option>
                                             <option value="20" <?php if ($limit == 20) echo 'selected'; ?>>20</option>
                                             <option value="40" <?php if ($limit == 40) echo 'selected'; ?>>40</option>
-                                            <option value="0" <?php if ($limit == 0) echo 'selected'; ?>>Semua</option>
+                                            <!-- <option value="0" <?php if ($limit == 0) echo 'selected'; ?>>Semua</option> -->
                                         </select>
                                     </div>
                                 </form>
@@ -361,7 +361,7 @@ untuk
                                                 <th>Username</th>
                                                 <th>Nama</th>
                                                 <th>Email</th>
-                                                <th>No Telp</th>
+                                                <!-- <th>No Telp</th> -->
                                                 <th>NIK</th>
                                                 <th>No Rek</th>
                                                 <th>Aksi</th>
@@ -374,7 +374,7 @@ untuk
                                                     <td><?= htmlspecialchars($row["username"]); ?></td>
                                                     <td><?= htmlspecialchars($row["nama"]); ?></td>
                                                     <td><?= htmlspecialchars($row["email"]); ?></td>
-                                                    <td><?= htmlspecialchars($row["notelp"]); ?></td>
+                                                    <!-- <td><?= htmlspecialchars($row["notelp"]); ?></td> -->
                                                     <td><?= htmlspecialchars($row["nik"]); ?></td>
                                                     <td><?= htmlspecialchars($row["no_rek"]); ?></td>
                                                     <td>

@@ -14,9 +14,7 @@ $loggedInRole = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 
 // Tentukan pilihan role yang bisa diakses
 $roles = [];
-if ($loggedInRole === 'superadmin') {
-    $roles = ['superadmin', 'admin', 'nasabah'];
-} elseif ($loggedInRole === 'admin') {
+if ($loggedInRole === 'admin') {
     $roles = ['admin', 'nasabah'];
 } else {
     $roles = ['nasabah'];

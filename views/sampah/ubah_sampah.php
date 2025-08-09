@@ -231,9 +231,8 @@ if (isset($_POST["submit"])) {
 
                                 <input type="hidden" name="id" value="<?= $sampah["id"] ?>">
 
-                                <!-- <label for="id_kategori">ID Kategori</label>
-            <input type="text" placeholder="Masukkan ID Kategori" name="id_kategori"
-                value="<?= $sampah["id_kategori"] ?>" required> -->
+                                <input type="hidden" name="id_kategori" value="<?= $sampah["id_kategori"] ?>">
+
 
                                 <label for="jenis">Jenis</label>
                                 <input type="text" placeholder="Masukkan Jenis Sampah" name="jenis"
@@ -260,10 +259,10 @@ if (isset($_POST["submit"])) {
                                 <label for="harga_nasabah">Harga Nasabah (Hasil)</label>
                                 <input type="text" id="harga_nasabah" placeholder="Harga Nasabah" name="harga"
                                     value="<?= $sampah["harga"] ?>" readonly>
-
+                                <!-- 
                                 <label for="jumlah">Jumlah</label>
                                 <input type="text" placeholder="Masukkan Jumlah" name="jumlah" value="<?= $sampah["jumlah"] ?>"
-                                    required>
+                                    required> -->
 
                                 <button type="submit" name="submit" class="inputbtn">Update</button>
                             </div>

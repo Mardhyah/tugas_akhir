@@ -274,12 +274,13 @@ if (!$transaksi_result) {
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="jenisTransaksi" id="jualSampah" value="jual_sampah" <?php if (!empty($jenisTransaksi) && $jenisTransaksi == 'jual_sampah') echo 'checked'; ?>>
+                                                <tr>
+                                                    <th>Frekuensi Menabung</th>
+                                                    <td><?= htmlspecialchars($row['frekuensi_menabung']) ?> kali</td>
+                                                </tr>
                                                 <label class="form-check-label" for="jualSampah">Jual sampah</label>
                                             </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="jenisTransaksi" id="tarikSaldo" value="tarik_saldo" <?php if (!empty($jenisTransaksi) && $jenisTransaksi == 'tarik_saldo') echo 'checked'; ?>>
-                                                <label class="form-check-label" for="tarikSaldo">Tarik saldo</label>
-                                            </div>
+
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="jenisTransaksi" id="semuaJenis" value="" <?php if (empty($jenisTransaksi)) echo 'checked'; ?>>
                                                 <label class="form-check-label" for="semuaJenis">Semua jenis</label>
