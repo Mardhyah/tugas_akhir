@@ -432,8 +432,6 @@ function isEncryptedFormat(string $text): bool
         }
     }
 
-
-
     .notif-badge {
         position: absolute;
         top: 20px;

@@ -137,28 +137,6 @@ if (isset($_POST["submit"])) {
         font-size: 15px;
         background-color: #f9f9f9;
     }
-
-    form input[type="text"]:focus,
-    form input[type="date"]:focus {
-        border-color: #007bff;
-        outline: none;
-        background-color: #fff;
-    }
-
-    .inputbtn {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        font-size: 15px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-
-    .inputbtn:hover {
-        background-color: #0056b3;
-    }
 </style>
 
 <body>
@@ -198,38 +176,38 @@ if (isset($_POST["submit"])) {
 
                             <!-- Tambahkan input hidden untuk menandai halaman -->
                             <input type="text" placeholder="Masukkan ID Project" name="id"
-                                value="<?= $user["id"] ?>"><br>
+                                value="<?= $user["id"] ?>">
                             <label for="">Username</label>
                             <input type="text" placeholder="Masukkan Nomor JO" name="username"
-                                value="<?= $user["username"] ?>"><br>
+                                value="<?= $user["username"] ?>">
 
                             <label for="">Nama</label>
                             <input type="text" placeholder="Masukan Tgl JO" name="nama"
-                                value="<?= $user["nama"] ?>"><br>
+                                value="<?= $user["nama"] ?>">
 
                             <label for="">Email</label>
                             <input type="text" placeholder="Masukkan Nama Project" name="email"
-                                value="<?= $user["email"] ?>"><br>
+                                value="<?= $user["email"] ?>">
 
                             <label for="">NoTelp</label>
                             <input type="text" placeholder="Masukkan Nama Project" name="notelp"
-                                value="<?= $user["notelp"] ?>"><br>
+                                value="<?= $user["notelp"] ?>">
 
                             <label for="">NIK</label>
                             <input type="text" placeholder="Masukkan Kode GBJ" name="nik"
-                                value="<?= $user["nik"] ?>"><br>
+                                value="<?= $user["nik"] ?>">
 
                             <label for="">Alamat</label>
                             <input type="text" placeholder="Masukkan Harga" name="alamat"
-                                value="<?= $user["alamat"] ?>"><br>
+                                value="<?= $user["alamat"] ?>">
 
                             <label for="">Tanggal Lahir</label>
                             <input type="date" placeholder="Masukkan Nama Panel" name="tgl_lahir"
-                                value="<?= $user["tgl_lahir"] ?>"><br>
+                                value="<?= $user["tgl_lahir"] ?>">
 
                             <label for="">Jenis Kelamin</label>
                             <input type="text" placeholder="Masukkan Tipe Jenis" name="kelamin"
-                                value="<?= $user["kelamin"] ?>"><br>
+                                value="<?= $user["kelamin"] ?>">
 
                             <button type="submit" name="submit" class="inputbtn">Input</button>
 
