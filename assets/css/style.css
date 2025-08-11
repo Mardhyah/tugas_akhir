@@ -878,86 +878,719 @@ tr:hover {
         color: #999;
     }
 
-/* tambah_admin.php */
-  .container-add-admin {
-        max-width: 1000px;
-        margin: 30px auto;
-        background-color: #fff;
-        border-radius: 10px;
-        padding: 30px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        font-family: 'Segoe UI', sans-serif;
-    }
 
-    form {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-
-    .form-add-admin-group {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(48%, 1fr));
-        gap: 20px;
+    /* Styling for suggestion box */
+    #suggestions {
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
         width: 100%;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
     }
 
-    .form-add-admin-field {
+    /* Styling for each suggestion item */
+    #suggestions div {
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Hover effect */
+    #suggestions div:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Ensure it doesn't overlap with sidebar */
+    .sidebar+#suggestions {
+        margin-left: 0;
+        position: relative;
+    }
+
+    /* Mobile-friendly adjustment */
+    @media (max-width: 768px) {
+        #suggestions {
+            width: 100%;
+            left: 0;
+        }
+    }
+
+
+
+
+	/* dashboard.php */
+	    #grafik-penyetoran {
+        width: 90%;
+        max-width: 700px;
+        /* Lebar maksimum */
+        margin: 0 auto;
+    }
+
+    #setorSampahChart {
+        width: 100% !important;
+        height: 300px !important;
+        /* Tinggi chart diperbesar */
+    }
+
+    /* Container untuk keseluruhan riwayat */
+    .history {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        max-width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Daftar transaksi - scrollable */
+    .transaction-list {
         display: flex;
         flex-direction: column;
+        gap: 15px;
+        max-height: 400px;
+        /* <== scroll aktif jika tinggi lebih dari ini */
+        overflow-y: auto;
+        padding-right: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
     }
 
-    .form-add-admin-field label {
-        margin-bottom: 6px;
-        font-weight: 600;
-        font-size: 14px;
+    /* Setiap item transaksi */
+    .transaction-item {
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 15px 20px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
     }
 
-    .form-add-admin-input,
-    .form-add-admin-input-nasabah,
-    textarea,
-    select {
-        padding: 10px 12px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        outline: none;
-        transition: border-color 0.3s;
-        font-family: inherit;
+    .transaction-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .form-add-admin-input:focus,
-    .form-add-admin-input-nasabah:focus,
-    textarea:focus,
-    select:focus {
-        border-color: #4a90e2;
-    }
-
-    textarea {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    .form-add-admin-field.full-width {
-        grid-column: span 2;
-    }
-
-    .form-add-admin-actions {
+    /* Header item transaksi */
+    .transaction-header {
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'Poppins', sans-serif;
+        margin-bottom: 10px;
+    }
+
+    .transaction-header strong {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .transaction-date {
+        font-size: 14px;
+        color: #777;
+        font-weight: 500;
+    }
+
+    /* Body transaksi */
+    .transaction-body {
+        font-size: 15px;
+        color: #555;
+        line-height: 1.6;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .transaction-body div {
+        margin-bottom: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .transaction-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .transaction-body {
+            font-size: 14px;
+        }
+
+        .transaction-item {
+            padding: 15px;
+        }
+    }
+
+
+    .nasabah-info-wide-card {
         width: 100%;
         margin-top: 30px;
     }
 
-    .btn-cancel {
-        background-color: #f2f2f2;
+    .user-card-wide {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        padding: 24px 32px;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+
+    .user-info-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .user-info-section div {
+        font-size: 16px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-info-box {
+        background-color: #ffffff;
+        border-left: 5px solid #4e73df;
+        padding: 14px 18px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-info-box i {
+        font-size: 18px;
+        color: #4e73df;
+    }
+
+    .user-info-box span {
+        font-size: 15px;
         color: #333;
     }
 
-    .btn-cancel:hover {
-        background-color: #e0e0e0;
+
+    .balance-section {
+        flex: 1;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 20px;
     }
 
-	/* ubah_admin.php */
-	
+    .balance-box {
+        flex: 1;
+        min-width: 180px;
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 1px #ddd;
+    }
+
+    .balance-box.tunai {
+        background-color: #e3f2fd;
+    }
+
+    .balance-box.emas {
+        background-color: #fff3e0;
+    }
+
+    .balance-box .label {
+        display: block;
+        font-size: 15px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .balance-box .value {
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .balance-box.tunai .value {
+        color: #1e88e5;
+    }
+
+    .balance-box.emas .value {
+        color: #fb8c00;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+        .user-card-wide {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .balance-section {
+            flex-direction: column;
+        }
+
+        .balance-box {
+            width: 100%;
+        }
+    }
+
+    .notif-badge {
+        position: absolute;
+        top: 20px;
+        /* semakin besar nilainya, semakin ke bawah */
+        left: 18px;
+        /* atur sesuai posisi ikon lonceng kamu */
+        background-color: red;
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 50%;
+        font-weight: bold;
+    }
+
+
+    .verif-button {
+        display: inline-block;
+        background-color: #fff7cc;
+        /* kuning muda */
+        color: #b58900;
+        /* gold/kuning gelap untuk teks */
+        padding: 4px 8px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+
+    .verif-button:hover {
+        background-color: #ffec99;
+        /* sedikit lebih terang saat hover */
+    }
+
+
+	/* notifikasi_nasabah.php */
+	    .btn-acc {
+        background-color: green;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .btn-tolak {
+        background-color: red;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
+
+
+/* index_detail.php */
+	   .containeruser {
+            max-width: 1100px;
+            /* ukuran container lebih besar */
+            margin: 40px auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-wrapper {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            background-color: #f5f5f5;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Kartu Kiri */
+        .left-card {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .card-title {
+            background-color: #25745A;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .user-info h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .user-info p {
+            margin: 5px 0 0;
+            color: #555;
+        }
+
+        /* Kartu Kanan */
+        .right-card {
+            flex: 2;
+            min-width: 300px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .right-card h3 {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-row .value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .card-wrapper {
+                flex-direction: column;
+            }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning {
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #ec971f;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+
+
+	/* semua transaksi */
+
+		    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="search"],
+    .form-group input[type="number"],
+    .form-group select {
+        padding: 10px 14px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: 'Poppins', sans-serif;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+
+    /* Overlay modal */
+    .custom-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Modal box */
+    .custom-modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        position: relative;
+        animation: slideDown 0.3s ease;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Animasi muncul dari atas */
+    @keyframes slideDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Tombol tutup (x) */
+    .custom-close {
+        position: absolute;
+        right: 20px;
+        top: 18px;
+        font-size: 26px;
+        color: #999;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .custom-close:hover {
+        color: #333;
+    }
+
+    /* Konten dalam modal */
+    .custom-modal-content h3 {
+        margin-top: 0;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .custom-modal-content p {
+        margin: 10px 0;
+        color: #444;
+    }
+
+    #modal-close-btn {
+        padding: 8px 20px;
+        background: #0e5d2fff;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        float: right;
+        transition: 0.3s;
+        margin-top: -20px;
+        /* naikkan tombol */
+        margin-bottom: 0;
+        /* pastikan tidak terlalu ke bawah */
+    }
+
+
+    #modal-close-btn:hover {
+        background-color: #178344ff;
+    }
+
+    .pagination-wrapper {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .pagination {
+        display: inline-flex;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        gap: 6px;
+    }
+
+    .pagination li {
+        display: inline;
+    }
+
+    .pagination li a {
+        padding: 6px 12px;
+        background-color: #f2f2f2;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        color: #333;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    .pagination li a:hover {
+        background-color: #ddd;
+    }
+
+    .pagination li.active a {
+        font-weight: bold;
+        background-color: #333;
+        color: #fff;
+        border-color: #333;
+    }
+
+
+
+
+	/* rekap_transaksi.php */
+	.custom-modal-rekap {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .custom-modal-rekap .modal-content {
+        background-color: #fff;
+        margin: 5% auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 10px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 10px;
+    }
+
+    .modal-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .modal-body {
+        padding: 10px 0;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-check {
+        margin-bottom: 10px;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding-top: 10px;
+    }
+
+    .modal-footer button {
+        flex: 1 1 45%;
+    }
+
+    .btn-close {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-close:hover {
+        background-color: #5a6268;
+    }
+
+    .btn-ok {
+        background-color: #28886a;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-ok:hover {
+        background-color: #17654c;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 480px) {
+        .modal-footer {
+            flex-direction: column;
+        }
+
+        .modal-footer button {
+            width: 100%;
+        }
+    }
+
+
+	/* detail_nasabah.php */
+    .back-btn {
+        background-color: #6c757d;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background-color: #5a6268;
+        color: #fff;
+    }
+
+
+	/* ubah_nasabah.php */

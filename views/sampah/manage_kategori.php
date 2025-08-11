@@ -8,11 +8,6 @@ include_once __DIR__ . '/../layouts/sidebar.php';
 include_once __DIR__ . '/../../fungsi.php';
 
 
-
-
-
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle Add Category
     if (isset($_POST["add_category"])) {

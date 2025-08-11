@@ -102,109 +102,6 @@ if (!$transaksi_result) {
     <title>BankSampah</title>
 </head>
 
-<style>
-    .custom-modal {
-        display: none;
-        position: fixed;
-        z-index: 999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .custom-modal .modal-content {
-        background-color: #fff;
-        margin: 5% auto;
-        padding: 20px;
-        width: 90%;
-        max-width: 500px;
-        border-radius: 10px;
-        position: relative;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #dee2e6;
-        margin-bottom: 10px;
-    }
-
-    .modal-title {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    .modal-body {
-        padding: 10px 0;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-check {
-        margin-bottom: 10px;
-    }
-
-    .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        flex-wrap: wrap;
-        padding-top: 10px;
-    }
-
-    .modal-footer button {
-        flex: 1 1 45%;
-    }
-
-    .btn-close {
-        background-color: #6c757d;
-        color: #fff;
-        border: none;
-        padding: 10px;
-        font-size: 14px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-close:hover {
-        background-color: #5a6268;
-    }
-
-    .btn-ok {
-        background-color: #28886a;
-        color: #fff;
-        border: none;
-        padding: 10px;
-        font-size: 14px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-ok:hover {
-        background-color: #17654c;
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 480px) {
-        .modal-footer {
-            flex-direction: column;
-        }
-
-        .modal-footer button {
-            width: 100%;
-        }
-    }
-</style>
-
 <body>
 
     <!-- CONTENT -->
@@ -242,7 +139,7 @@ if (!$transaksi_result) {
 
                         <!-- Filter Modal -->
                         <!-- Modal Manual -->
-                        <div id="filterTransaksiModal" class="custom-modal">
+                        <div id="filterTransaksiModal" class="custom-modal-rekap">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Filter Transaksi</h5>
@@ -274,10 +171,7 @@ if (!$transaksi_result) {
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="jenisTransaksi" id="jualSampah" value="jual_sampah" <?php if (!empty($jenisTransaksi) && $jenisTransaksi == 'jual_sampah') echo 'checked'; ?>>
-                                                <tr>
-                                                    <th>Frekuensi Menabung</th>
-                                                    <td><?= htmlspecialchars($row['frekuensi_menabung']) ?> kali</td>
-                                                </tr>
+
                                                 <label class="form-check-label" for="jualSampah">Jual sampah</label>
                                             </div>
 

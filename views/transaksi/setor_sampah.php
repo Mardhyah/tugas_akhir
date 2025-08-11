@@ -200,44 +200,7 @@ if ($jenis_result->num_rows > 0) {
     <title>AdminHub</title>
 </head>
 <style>
-    /* Styling for suggestion box */
-    #suggestions {
-        position: absolute;
-        z-index: 1000;
-        background-color: white;
-        border: 1px solid #ccc;
-        max-height: 200px;
-        overflow-y: auto;
-        width: 100%;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 4px;
-    }
 
-    /* Styling for each suggestion item */
-    #suggestions div {
-        padding: 10px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    /* Hover effect */
-    #suggestions div:hover {
-        background-color: #f0f0f0;
-    }
-
-    /* Ensure it doesn't overlap with sidebar */
-    .sidebar+#suggestions {
-        margin-left: 0;
-        position: relative;
-    }
-
-    /* Mobile-friendly adjustment */
-    @media (max-width: 768px) {
-        #suggestions {
-            width: 100%;
-            left: 0;
-        }
-    }
 </style>
 <script>
     var jenisSampah = <?php echo json_encode($jenis_sampah); ?>;

@@ -39,22 +39,7 @@ if (!$row) {
     <link rel="stylesheet" href="../../assets/css/style.css">
     <title>BankSampah</title>
 </head>
-<style>
-    .back-btn {
-        background-color: #6c757d;
-        color: #fff;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: background-color 0.3s ease;
-    }
 
-    .back-btn:hover {
-        background-color: #5a6268;
-        color: #fff;
-    }
-</style>
 
 <body>
 

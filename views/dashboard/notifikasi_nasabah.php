@@ -58,25 +58,7 @@ if (isset($_GET['id']) && isset($_GET['aksi'])) {
 </head>
 
 <style>
-    .btn-acc {
-        background-color: green;
-        color: white;
-        padding: 5px 10px;
-        text-decoration: none;
-        border-radius: 4px;
-    }
 
-    .btn-tolak {
-        background-color: red;
-        color: white;
-        padding: 5px 10px;
-        text-decoration: none;
-        border-radius: 4px;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
 </style>
 
 <body>

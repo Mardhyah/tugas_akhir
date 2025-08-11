@@ -152,21 +152,6 @@ if (isset($_POST["submit"])) {
         outline: none;
         background-color: #fff;
     }
-
-    .inputbtn {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        font-size: 15px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-top: 10px;
-    }
-
-    .inputbtn:hover {
-        background-color: #0056b3;
-    }
 </style>
 
 <body>
@@ -240,7 +225,7 @@ if (isset($_POST["submit"])) {
                             <input type="text" placeholder="Masukkan Tipe Jenis" name="kelamin"
                                 value="<?= $user["kelamin"] ?>"><br>
 
-                            <button type="submit" name="submit" class="inputbtn">Input</button>
+                            <button type="submit" name="submit" class="inputbtn">Ubah</button>
                     </div>
                     </form>
                 </div>

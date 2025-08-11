@@ -236,44 +236,7 @@ include_once __DIR__ . '/../layouts/sidebar.php';
     }
 </script>
 <style>
-    /* Styling for suggestion box */
-    #suggestions {
-        position: absolute;
-        z-index: 1000;
-        background-color: white;
-        border: 1px solid #ccc;
-        max-height: 200px;
-        overflow-y: auto;
-        width: 100%;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 4px;
-    }
 
-    /* Styling for each suggestion item */
-    #suggestions div {
-        padding: 10px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    /* Hover effect */
-    #suggestions div:hover {
-        background-color: #f0f0f0;
-    }
-
-    /* Ensure it doesn't overlap with sidebar */
-    .sidebar+#suggestions {
-        margin-left: 0;
-        position: relative;
-    }
-
-    /* Mobile-friendly adjustment */
-    @media (max-width: 768px) {
-        #suggestions {
-            width: 100%;
-            left: 0;
-        }
-    }
 </style>
 
 <body>
@@ -486,35 +449,6 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                         }
                     });
                 });
-
-                // // Hitung sisa saldo emas jika tarik dalam gram
-                // jumlahEmasSelect.addEventListener('change', function() {
-                //     const selectedAmount = parseFloat(this.value);
-                //     if (isNaN(selectedAmount)) {
-                //         sisaSaldoEmas.textContent = '';
-                //         return;
-                //     }
-
-                //     const remainingBalance = currentBalanceEmas - selectedAmount;
-                //     sisaSaldoEmas.textContent = `Saldo emas setelah penarikan: ${remainingBalance.toFixed(4)} gram`;
-                //     sisaSaldoEmas.classList.remove('text-danger');
-                //     sisaSaldoEmas.classList.add('text-info');
-                // });
-
-                // // Hitung sisa saldo emas jika tarik dalam bentuk uang
-                // jumlahUangInput.addEventListener('input', function() {
-                //     const jumlahUang = parseFloat(this.value);
-                //     if (isNaN(jumlahUang)) {
-                //         sisaSaldoUang.textContent = '';
-                //         return;
-                //     }
-
-                //     const emasToDeduct = jumlahUang / currentGoldPriceSell;
-                //     const remainingEmas = currentBalanceEmas - emasToDeduct;
-                //     sisaSaldoUang.textContent = `Saldo emas setelah penarikan: ${remainingEmas.toFixed(4)} gram`;
-                //     sisaSaldoUang.classList.remove('text-danger');
-                //     sisaSaldoUang.classList.add('text-info');
-                // });
             </script>
 
 
