@@ -422,8 +422,9 @@ if ($jenis_result->num_rows > 0) {
                             </div>
                         <?php } ?>
 
+                        <form id="withdrawForm" method="POST" action="index.php?page=setor_sampah" target="notaWindow" onsubmit="return handleWithdrawSubmit();">
 
-                        <form method="POST" action="index.php?page=setor_sampah" target="notaWindow" onsubmit="window.open('', 'notaWindow').focus();">
+                            <!-- <form method="POST" action="index.php?page=setor_sampah" target="notaWindow" onsubmit="window.open('', 'notaWindow').focus();"> -->
 
                             <?php if (isset($user_data)) { ?>
                                 <input type="hidden" name="user_id" value="<?php echo $user_data['id']; ?>">
@@ -526,6 +527,12 @@ if ($jenis_result->num_rows > 0) {
             window.opener.location.reload();
         }
 
+        function handleWithdrawSubmit() {
+            setTimeout(function() {
+                window.location.href = 'index.php?page=setor_sampah';
+            }, 500); // kasih delay 0.5 detik biar submit dulu
+            return true; // tetap lanjut submit form
+        }
 
         document.getElementById('submitBtn').addEventListener('click', function(event) {
             const userIdInput = document.querySelector('input[name="user_id"]');

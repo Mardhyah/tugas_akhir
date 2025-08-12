@@ -28,7 +28,8 @@ LEFT JOIN pindah_saldo ps ON t.id = ps.id_transaksi
 LEFT JOIN user u ON t.id_user = u.id
 LEFT JOIN sampah s ON ss.id_sampah = s.id OR js.id_sampah = s.id
 WHERE u.id = ?
-ORDER BY t.time DESC";
+ORDER BY t.date DESC, t.time DESC
+";
 
 
 $stmtTransaksi = $koneksi->prepare($sqlTransaksi);
@@ -47,7 +48,7 @@ if ($resultTransaksi === false) {
 $sqlMenabung = "
     SELECT 
         MAX(t.date) AS terakhir_menabung,
-        COUNT(*) AS frekuensi_menabung
+        COUNT(DISTINCT CONCAT(t.date, ' ', DATE_FORMAT(t.time, '%H:%i'))) AS frekuensi_menabung
     FROM 
         transaksi t
     JOIN 
@@ -55,6 +56,7 @@ $sqlMenabung = "
     WHERE 
         t.id_user = ?
 ";
+
 
 $stmtMenabung = $koneksi->prepare($sqlMenabung);
 $stmtMenabung->bind_param("i", $id_user);
@@ -366,80 +368,93 @@ function isEncryptedFormat(string $text): bool
                         <div class="transaction-list">
                             <?php
                             if ($resultTransaksi->num_rows > 0) {
+
+                                // 1️⃣ Kelompokkan data berdasarkan id_transaksi
+                                $transaksiData = [];
                                 while ($row = $resultTransaksi->fetch_assoc()) {
+                                    $transaksiData[$row['id_transaksi']][] = $row;
+                                }
+
+                                // 2️⃣ Loop per transaksi
+                                foreach ($transaksiData as $idTransaksi => $items) {
+                                    // Ambil data header (pakai item pertama)
+                                    $firstRow = $items[0];
                                     echo "<div class='transaction-item'>";
                                     echo "<div class='transaction-header'>";
-                                    echo "<strong>" . ucfirst(str_replace('_', ' ', $row['jenis_transaksi'])) . "</strong>";
-                                    echo "<span class='transaction-date'>" . date('d M Y', strtotime($row['date'])) . " | " . date('H:i:s', strtotime($row['time'])) . "</span>";
+                                    echo "<strong>" . ucfirst(str_replace('_', ' ', $firstRow['jenis_transaksi'])) . "</strong>";
+                                    echo "<span class='transaction-date'>" . date('d M Y', strtotime($firstRow['date'])) .
+                                        " | " . date('H:i:s', strtotime($firstRow['time'])) . "</span>";
                                     echo "</div>";
 
                                     echo "<div class='transaction-body'>";
-                                    switch ($row['jenis_transaksi']) {
-                                        case 'tarik_saldo':
-                                            echo "<div>Jenis Saldo: " . ucfirst($row['jenis_saldo']) . "</div>";
 
-                                            $jumlahTarik = $row['jumlah_tarik'];
-                                            $jumlahDisplay = $jumlahTarik;
+                                    // 3️⃣ Loop setiap item di transaksi ini
+                                    foreach ($items as $row) {
+                                        switch ($row['jenis_transaksi']) {
+                                            case 'tarik_saldo':
+                                                $jumlahTarik = $row['jumlah_tarik'];
+                                                $jumlahDisplay = $jumlahTarik;
+                                                $jenisSaldoLower = strtolower($row['jenis_saldo']);
 
-                                            if (isEncryptedFormat($jumlahTarik)) {
-                                                try {
-                                                    $decrypted = decryptWithAES($jumlahTarik);
-
-                                                    if (stripos($decrypted, 'Gram') !== false) {
-                                                        $jumlahDisplay = $decrypted;
-                                                    } else {
-                                                        $jumlahDisplay = "Rp. " . number_format((float)$decrypted, 2, ',', '.');
+                                                if (isEncryptedFormat($jumlahTarik)) {
+                                                    try {
+                                                        $decrypted = decryptWithAES($jumlahTarik);
+                                                        if (strpos($jenisSaldoLower, 'emas') !== false) {
+                                                            // Format emas → max 2 desimal saja (0.01 gram)
+                                                            $jumlahDisplay = number_format((float)$decrypted, 2, ',', '.') . ' Gram';
+                                                        } else {
+                                                            $jumlahDisplay = "Rp. " . number_format((float)$decrypted, 2, ',', '.');
+                                                        }
+                                                    } catch (Exception $e) {
+                                                        $jumlahDisplay = '❌ Gagal dekripsi';
                                                     }
-                                                } catch (Exception $e) {
-                                                    $jumlahDisplay = '❌ Gagal dekripsi';
-                                                }
-                                            } else {
-                                                $jumlahDisplay = "Rp. " . number_format((float)$jumlahTarik, 2, ',', '.');
-                                            }
-
-                                            echo "<div style='color:red;'>- $jumlahDisplay</div>";
-                                            break;
-
-                                        case 'setor_sampah':
-                                            echo "<div>Sampah: " . ucfirst($row['jenis_sampah']) . " (" . number_format((float)$row['jumlah_kg'], 2) . " Kg)</div>";
-
-                                            $jumlahRp = $row['jumlah_rp'];
-                                            $jumlahDisplay = $jumlahRp;
-
-                                            if (isEncryptedFormat($jumlahRp)) {
-                                                try {
-                                                    $decrypted = decryptWithAES($jumlahRp);
-
-                                                    if (stripos($decrypted, 'Gram') !== false) {
-                                                        $jumlahDisplay = $decrypted;
+                                                } else {
+                                                    if (strpos($jenisSaldoLower, 'emas') !== false) {
+                                                        $jumlahDisplay = number_format((float)$jumlahTarik, 2, ',', '.') . ' Gram';
                                                     } else {
-                                                        $jumlahDisplay = "Rp. " . number_format((float)$decrypted, 2, ',', '.');
+                                                        $jumlahDisplay = "Rp. " . number_format((float)$jumlahTarik, 2, ',', '.');
                                                     }
-                                                } catch (Exception $e) {
-                                                    $jumlahDisplay = '❌ Gagal dekripsi';
                                                 }
-                                            } else {
-                                                $jumlahDisplay = "Rp. " . number_format((float)$jumlahRp, 2, ',', '.');
-                                            }
+                                                echo "<div style='color:red;'>- $jumlahDisplay</div>";
+                                                break;
 
-                                            echo "<div style='color:#28a745;'>+ $jumlahDisplay</div>";
-                                            break;
+                                            case 'setor_sampah':
+                                                echo "<div>Sampah: " . ucfirst($row['jenis_sampah']) .
+                                                    " (" . number_format((float)$row['jumlah_kg'], 2) . " Kg)</div>";
 
+                                                $jumlahRp = $row['jumlah_rp'];
+                                                $jumlahDisplay = $jumlahRp;
 
+                                                if (isEncryptedFormat($jumlahRp)) {
+                                                    try {
+                                                        $decrypted = decryptWithAES($jumlahRp);
+                                                        $jumlahDisplay = "Rp. " . number_format((float)$decrypted, 2, ',', '.');
+                                                    } catch (Exception $e) {
+                                                        $jumlahDisplay = '❌ Gagal dekripsi';
+                                                    }
+                                                } else {
+                                                    $jumlahDisplay = "Rp. " . number_format((float)$jumlahRp, 2, ',', '.');
+                                                }
 
-                                        case 'jual_sampah':
-                                            echo "<div>Jenis Sampah: " . ucfirst($row['jenis_jual_sampah']) . " (" . number_format($row['jumlah_jual_kg'], 2) . " Kg)</div>";
-                                            echo "<div>Total Penjualan: Rp. " . number_format($row['total_penjualan'], 2, ',', '.') . "</div>";
-                                            break;
+                                                echo "<div style='color:#28a745;'>+ $jumlahDisplay</div>";
+                                                break;
+
+                                            case 'jual_sampah':
+                                                echo "<div>Jenis Sampah: " . ucfirst($row['jenis_jual_sampah']) .
+                                                    " (" . number_format($row['jumlah_jual_kg'], 2) . " Kg)</div>";
+                                                echo "<div>Total Penjualan: Rp. " . number_format($row['total_penjualan'], 2, ',', '.') . "</div>";
+                                                break;
+                                        }
                                     }
+
                                     echo "</div></div>";
                                 }
                             } else {
                                 echo "<p>Tidak ada transaksi ditemukan.</p>";
                             }
-
                             ?>
                         </div>
+
                     </div>
                 </div>
                 <?php if ($data['role'] == 'nasabah') : ?>

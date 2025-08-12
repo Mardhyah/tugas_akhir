@@ -110,12 +110,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['withdraw'])) {
             }
         }
     } elseif ($withdraw_type === 'gold') {
-        if ($jumlah_tarik < 0.1) {
-            $message = "Penarikan emas minimal 0.1 gram.";
+        if ($jumlah_tarik <= 0) {
+            $message = "Jumlah yang ditarik harus lebih dari 0 gram.";
         } elseif ($jumlah_tarik > $saldo_emas) {
             $message = "Saldo emas tidak mencukupi.";
-        } elseif (($saldo_emas - $jumlah_tarik) < 0.1) {
-            $message = "Saldo emas tersisa minimal 0.1 gram.";
         } else {
             try {
                 $koneksi->begin_transaction();
@@ -166,6 +164,9 @@ $emas_balance = $stmt_balance->get_result()->fetch_assoc()['emas'] ?? 0;
 
 include_once __DIR__ . '/../layouts/header.php';
 include_once __DIR__ . '/../layouts/sidebar.php';
+
+
+
 ?>
 
 <!-- Untuk JavaScript -->
@@ -336,7 +337,8 @@ include_once __DIR__ . '/../layouts/sidebar.php';
 
                         <!-- Form Tarik Saldo -->
                         <?php if (isset($user_data) && !is_null($user_data)) { ?>
-                            <form method="POST" action="index.php?page=tarik_saldo" target="notaWindow" onsubmit="return validateWithdrawal();">
+                            <form id="withdrawForm" method="POST" action="index.php?page=tarik_saldo" target="notaWindow" onsubmit="return handleWithdrawSubmit();">
+                                <!-- <form method="POST" action="index.php?page=tarik_saldo" target="notaWindow" onsubmit="return validateWithdrawal();"> -->
 
                                 <!-- Jenis Penarikan -->
                                 <div class="row mb-4">
@@ -411,6 +413,13 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                 if (window.opener) {
                     window.opener.location.reload();
                 }
+
+                function handleWithdrawSubmit() {
+                    setTimeout(function() {
+                        window.location.href = 'index.php?page=tarik_saldo';
+                    }, 500); // kasih delay 0.5 detik biar submit dulu
+                    return true; // tetap lanjut submit form
+                }
             </script>
 
             <script>
@@ -427,8 +436,8 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                 const jumlahEmasSelect = document.getElementById('jumlah_emas');
                 const jumlahUangInput = document.getElementById('jumlah_uang');
 
-                // Nilai saldo dari input hidden (pastikan ini ada di HTML kamu)
-                const currentBalanceEmas = parseFloat(document.getElementById('current_balance_emas').value);
+                // Nilai saldo dari input hidden 
+                const currentBalanceEmas = parseFloat(document.getElementById('current_balance_emas_hidden').value);
                 const currentGoldPriceSell = parseFloat(<?php echo $current_gold_price_sell; ?>); // harga jual emas per gram
 
                 // Fungsi untuk menampilkan input sesuai pilihan
@@ -448,6 +457,24 @@ include_once __DIR__ . '/../layouts/sidebar.php';
                             sisaSaldoEmas.textContent = '';
                         }
                     });
+                });
+
+                // Saat user memilih jumlah emas, tampilkan perbandingan dalam rupiah
+                jumlahEmasSelect.addEventListener('change', function() {
+                    const jumlahEmas = parseFloat(this.value);
+                    const nilaiRupiah = jumlahEmas * currentGoldPriceSell;
+
+                    // Tampilkan setara rupiah
+                    sisaSaldoEmas.textContent =
+                        `Setara dengan Rp ${nilaiRupiah.toLocaleString('id-ID', { minimumFractionDigits: 2 })}`;
+
+                    // Cek saldo
+                    if (jumlahEmas > currentBalanceEmas) {
+                        sisaSaldoEmas.textContent += " (Saldo emas tidak cukup!)";
+                        sisaSaldoEmas.style.color = "red";
+                    } else {
+                        sisaSaldoEmas.style.color = "blue";
+                    }
                 });
             </script>
 

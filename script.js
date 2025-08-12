@@ -67,3 +67,12 @@ switchMode.addEventListener('change', function () {
 		document.body.classList.remove('dark');
 	}
 })
+
+
+// ==== register_nasabah.php: toggle field Golongan & NIP ====
+function toggleGolongan() {
+	const status = document.getElementById("status_gol").value;
+	const wrapper = document.getElementById("golongan_nip_wrapper");
+	wrapper.style.display = status === "PNS" ? "flex" : "none";
+}
+window.addEventListener('DOMContentLoaded', toggleGolongan);
